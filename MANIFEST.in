@@ -1,0 +1,2 @@
+recursive-include tutorcodejail/patches *
+recursive-include tutorcodejail/templates *

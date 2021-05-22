@@ -1,0 +1,4 @@
+codejailservice:
+  command: ./manage.py runserver 0.0.0.0:8170
+  ports:
+    - "8170:8170"
