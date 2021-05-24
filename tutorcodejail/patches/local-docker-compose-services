@@ -2,7 +2,10 @@
 codejailservice:
   image: {{ CODEJAIL_DOCKER_IMAGE }}
   environment:
-    DJANGO_SETTINGS_MODULE: notesserver.settings.tutor
+    DJANGO_SETTINGS_MODULE: codejailservice.settings.tutor
+  security_opt:
+    - apparmor:docker-edx-sandbox
   volumes:
+    - ../plugins/codejail/apps/settings/tutor.py:/openedx/codejailservice/codejailservice/settings/tutor.py:ro
     - ../../data/codejail:/openedx/data
   restart: unless-stopped
