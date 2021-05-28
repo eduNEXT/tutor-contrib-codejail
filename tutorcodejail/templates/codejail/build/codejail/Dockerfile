@@ -23,7 +23,7 @@ ARG SANDBOX_PYTHON_VERSION=3.5.10
 RUN $PYENV_ROOT/bin/pyenv install $SANDBOX_PYTHON_VERSION
 
 RUN $PYENV_ROOT/versions/$CODEJAILSERVICE_PYTHON_VERSION/bin/python -m venv /openedx/venv
-RUN $PYENV_ROOT/versions/$SANDBOX_PYTHON_VERSION/bin/python -m venv /sandbox/venv
+RUN $PYENV_ROOT/versions/$SANDBOX_PYTHON_VERSION/bin/python -m venv --copies /sandbox/venv
 
 ###### Codejail service code
 FROM minimal as code
@@ -57,10 +57,18 @@ RUN wget https://raw.githubusercontent.com/edx/edx-platform/open-release/koa.3/r
 ##### Prod image
 FROM minimal as production
 
+# Install system requirements
+RUN apt update && \
+    apt install -y sudo
+
 COPY --from=code /openedx/codejailservice /openedx/codejailservice
 COPY --from=python /opt/pyenv /opt/pyenv
 COPY --from=codejailservice-python-requirements /openedx/venv /openedx/venv
 COPY --from=sandbox-python-requirements /sandbox/venv /sandbox/venv
+
+# Setup sandbox
+ENV SANDBOX_ENV=/sandbox/venv
+RUN groupadd -r sandbox && useradd -m -r -g sandbox sandbox && chown -R sandbox:sandbox /sandbox
 
 ENV PATH /openedx/venv/bin:${PATH}
 ENV VIRTUAL_ENV /openedx/venv/
