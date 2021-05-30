@@ -4,7 +4,7 @@ from codejail.django_integration_utils import apply_django_settings
 
 SECRET_KEY = "{{ CODEJAIL_SECRET_KEY }}"
 ALLOWED_HOSTS = [
-	"*",
+	# "*",
     "codejailservice",
     "{{ CODEJAIL_HOST }}",
 ]
@@ -14,7 +14,7 @@ ALLOWED_HOSTS = [
 CODE_JAIL = {
     'python_bin': '/sandbox/venv/bin/python',
     # User to run as in the sandbox.
-    'user': '',
+    'user': 'sandbox',
 
     # Configurable limits.
     'limits': {
