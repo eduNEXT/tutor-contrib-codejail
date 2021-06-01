@@ -20,8 +20,15 @@ config = {
 }
 
 hooks = {
-    "build-image": {"codejail": "{{ CODEJAIL_DOCKER_IMAGE }}"},
-    "remote-image": {"codejail": "{{ CODEJAIL_DOCKER_IMAGE }}"},
+    "build-image": {
+        "codejail": "{{ CODEJAIL_DOCKER_IMAGE }}",
+        "codejail_apparmor": "docker.io/ednxops/codejail_apparmor:latest"
+    },
+    "remote-image": {
+        "codejail": "{{ CODEJAIL_DOCKER_IMAGE }}",
+        "codejail_apparmor": "docker.io/ednxops/codejail_apparmor:latest"
+    },
+    "init": ["codejail_apparmor"]
 }
 
 
