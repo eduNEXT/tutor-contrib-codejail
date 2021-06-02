@@ -49,10 +49,11 @@ ENV VIRTUAL_ENV /sandbox/venv/
 
 WORKDIR /var/tmp
 RUN mkdir -p common/lib/
-RUN svn export https://github.com/edx/edx-platform.git/tags/open-release/koa.3/common/lib/sandbox-packages common/lib/sandbox-packages
-RUN svn export https://github.com/edx/edx-platform.git/tags/open-release/koa.3/common/lib/symmath common/lib/symmath
-# RUN wget https://raw.githubusercontent.com/edx/edx-platform/open-release/koa.3/requirements/edx-sandbox/base.txt && pip3 install base.txt
-RUN wget https://raw.githubusercontent.com/edx/edx-platform/open-release/koa.3/requirements/edx-sandbox/py35.txt && pip3 install -r py35.txt
+
+COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/common/lib/sandbox-packages common/lib/sandbox-packages
+COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/common/lib/sandbox-packages common/lib/symmath
+COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/requirements/edx-sandbox/py35.txt py35.txt
+RUN pip3 install -r py35.txt
 
 ##### Prod image
 FROM minimal as production
