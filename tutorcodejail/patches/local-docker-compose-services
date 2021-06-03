@@ -2,10 +2,10 @@
 codejailservice:
   image: {{ CODEJAIL_DOCKER_IMAGE }}
   environment:
-    DJANGO_SETTINGS_MODULE: codejailservice.settings.tutor
+    FLASK_APP_SETTINGS: config.DevelopmentConfig
   security_opt:
     - apparmor:docker-edx-sandbox
   volumes:
-    - ../plugins/codejail/apps/settings/tutor.py:/openedx/codejailservice/codejailservice/settings/tutor.py:ro
+    - ../plugins/codejail/apps/config/tutor.py:/openedx/codejailservice/codejailservice/tutor.py:ro
     - ../../data/codejail:/openedx/data
   restart: unless-stopped
