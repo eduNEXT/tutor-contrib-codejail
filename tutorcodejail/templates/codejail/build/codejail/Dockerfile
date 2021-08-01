@@ -76,4 +76,12 @@ ENV VIRTUAL_ENV /openedx/venv/
 WORKDIR /openedx/codejailservice
 
 EXPOSE 8000
-CMD gunicorn --workers=2 --name codejailservice --bind=0.0.0.0:8000 --max-requests=1000 codejailservice.wsgi:application
+CMD uwsgi \
+    --http 0.0.0.0:8000 \
+    --thunder-lock \
+    --single-interpreter \
+    --enable-threads \
+    --processes=${UWSGI_WORKERS:-2} \
+    --buffer-size=8192 \
+    --max-requests=1000 \
+    --wsgi-file /openedx/codejailservice/wsgi.py
