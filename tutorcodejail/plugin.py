@@ -14,7 +14,7 @@ config = {
     },
     "defaults": {
         "VERSION": __version__,
-        "HOST": "codejailservice.{{ LMS_HOST }}",
+        "HOST": "codejailservice",
         "DOCKER_IMAGE": "docker.io/ednxops/codejailservice:latest",
     },
     "set":{

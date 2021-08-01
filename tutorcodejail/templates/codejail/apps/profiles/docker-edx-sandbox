@@ -35,7 +35,17 @@ profile docker-edx-sandbox flags=(attach_disconnected,mediate_deleted) {
   /sandbox/venv/bin/python Cx -> child,
   profile child flags=(attach_disconnected,mediate_deleted){
     #include <abstractions/base>
-    #include <abstractions/python>
+
+    #
+    # Python abstractions adapted from https://gitlab.com/apparmor/apparmor/-/raw/master/profiles/apparmor.d/abstractions/python
+    #
+    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/lib/python{2.[4-7],3.[0-9]}/**.{pyc,so} mr,
+    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/lib/python{2.[4-7],3.[0-9]}/**.{egg,py,pth} r,
+    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/lib/python{2.[4-7],3.[0-9]}/{site,dist}-packages/ r,
+    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/lib-dynload/*.so mr,
+
+    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/include/python{2.[4-7],3.[0-9]}*/pyconfig.h r,
+
 
     #
     # Whitelist particiclar shared objects from the system
