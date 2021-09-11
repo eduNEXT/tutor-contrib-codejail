@@ -5,3 +5,4 @@ codejailservice:
     FLASK_APP_SETTINGS: codejailservice.config.DevelopmentConfig
   ports:
     - "8550:8550"
+  restart: unless-stopped

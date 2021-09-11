@@ -16,20 +16,19 @@ config = {
         "VERSION": __version__,
         "HOST": "codejailservice",
         "DOCKER_IMAGE": f"docker.io/ednxops/codejailservice:{__version__}",
-    },
-    "set":{
         "SANDBOX_PYTHON_VERSION": "3.5.10",
-    }
+    },
+    "set":{}
 }
 
 hooks = {
     "build-image": {
         "codejail": "{{ CODEJAIL_DOCKER_IMAGE }}",
-        "codejail_apparmor": "docker.io/ednxops/codejail_apparmor:latest"
+        "codejail_apparmor": f"docker.io/ednxops/codejail_apparmor:{__version__}"
     },
     "remote-image": {
         "codejail": "{{ CODEJAIL_DOCKER_IMAGE }}",
-        "codejail_apparmor": "docker.io/ednxops/codejail_apparmor:latest"
+        "codejail_apparmor": f"docker.io/ednxops/codejail_apparmor:{__version__}"
     },
     "init": ["codejail_apparmor"]
 }

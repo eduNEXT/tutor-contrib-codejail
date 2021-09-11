@@ -1,5 +1,5 @@
 FROM docker.io/ubuntu:20.04 as minimal
-MAINTAINER Overhang.io <contact@overhang.io>
+MAINTAINER edunext.co <contact@edunext.co>
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
@@ -19,7 +19,7 @@ RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v1.2.21 --dept
 ARG CODEJAILSERVICE_PYTHON_VERSION=3.8.6
 RUN $PYENV_ROOT/bin/pyenv install $CODEJAILSERVICE_PYTHON_VERSION
 
-ARG SANDBOX_PYTHON_VERSION={{ SANDBOX_PYTHON_VERSION }}
+ARG SANDBOX_PYTHON_VERSION={{ CODEJAIL_SANDBOX_PYTHON_VERSION }}
 RUN $PYENV_ROOT/bin/pyenv install $SANDBOX_PYTHON_VERSION
 
 RUN $PYENV_ROOT/versions/$CODEJAILSERVICE_PYTHON_VERSION/bin/python -m venv /openedx/venv
@@ -51,7 +51,7 @@ WORKDIR /var/tmp
 RUN mkdir -p common/lib/
 
 COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/common/lib/sandbox-packages common/lib/sandbox-packages
-COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/common/lib/sandbox-packages common/lib/symmath
+COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/common/lib/symmath common/lib/symmath
 COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/requirements/edx-sandbox/py35.txt py35.txt
 RUN pip3 install -r py35.txt
 
