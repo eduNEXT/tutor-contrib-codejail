@@ -1,0 +1,7 @@
+codejail_apparmor-job:
+  image: ednxops/codejail_apparmor_loader:latest
+  privileged: true
+  volumes:
+    - ../plugins/codejail/apps/profiles/docker-edx-sandbox:/profiles/docker-edx-sandbox:ro
+    - /sys:/sys
+    - /etc/apparmor.d:/etc/apparmor.d
