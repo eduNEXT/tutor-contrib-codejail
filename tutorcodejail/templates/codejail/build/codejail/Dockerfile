@@ -75,9 +75,9 @@ ENV PATH /openedx/venv/bin:${PATH}
 ENV VIRTUAL_ENV /openedx/venv/
 WORKDIR /openedx/codejailservice
 
-EXPOSE 8000
+EXPOSE 8550
 CMD uwsgi \
-    --http 0.0.0.0:8000 \
+    --http 0.0.0.0:8550 \
     --thunder-lock \
     --single-interpreter \
     --enable-threads \

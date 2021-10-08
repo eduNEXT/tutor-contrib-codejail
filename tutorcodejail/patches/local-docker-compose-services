@@ -2,7 +2,7 @@
 codejailservice:
   image: {{ CODEJAIL_DOCKER_IMAGE }}
   environment:
-    FLASK_APP_SETTINGS: config.ProductionConfig
+    FLASK_APP_SETTINGS: codejailservice.config.ProductionConfig
   security_opt:
     - apparmor:docker-edx-sandbox
   volumes:
