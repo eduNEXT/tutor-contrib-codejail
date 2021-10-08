@@ -39,7 +39,7 @@ ENV VIRTUAL_ENV /openedx/venv/
 COPY --from=code /openedx/codejailservice /openedx/codejailservice
 WORKDIR /openedx/codejailservice
 RUN pip3 install -r requirements/base.txt
-RUN pip3 install ipdb
+RUN pip3 install uwsgi==2.0.19.1
 
 ###### Install python requirements in virtualenv
 FROM python as sandbox-python-requirements
