@@ -4,6 +4,7 @@ import os
 from glob import glob
 
 import pkg_resources
+
 from .__about__ import __version__
 
 templates = pkg_resources.resource_filename("tutorcodejail", "templates")
