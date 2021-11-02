@@ -26,3 +26,12 @@ share/python-wheels/
 *.egg
 MANIFEST
 .*.swp
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

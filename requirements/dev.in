@@ -1,0 +1,13 @@
+# Additional requirements for development of this application
+-c constraints.txt
+
+-r base.txt
+
+pylint
+pycodestyle
+pydocstyle
+coverage
+pytest
+pudb
+
+
