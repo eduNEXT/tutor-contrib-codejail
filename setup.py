@@ -40,11 +40,7 @@ setup(
     include_package_data=True,
     python_requires=">=3.5",
     install_requires=["tutor-openedx"],
-    entry_points={
-        "tutor.plugin.v0": [
-            "codejail = tutorcodejail.plugin"
-        ]
-    },
+    entry_points={"tutor.plugin.v0": ["codejail = tutorcodejail.plugin"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
