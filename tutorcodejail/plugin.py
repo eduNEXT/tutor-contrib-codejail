@@ -1,7 +1,9 @@
-from glob import glob
-import os
-import pkg_resources
+"""Manage the plugin for the tutorcodejail."""
 
+import os
+from glob import glob
+
+import pkg_resources
 from .__about__ import __version__
 
 templates = pkg_resources.resource_filename("tutorcodejail", "templates")
@@ -33,10 +35,11 @@ hooks = {
 
 
 def patches():
+    """Logic for retrueve all the patches of tutorcodejail."""
     all_patches = {}
     patches_dir = pkg_resources.resource_filename("tutorcodejail", "patches")
     for path in glob(os.path.join(patches_dir, "*")):
-        with open(path) as patch_file:
+        with open(path, encoding="utf-8") as patch_file:
             name = os.path.basename(path)
             content = patch_file.read()
             all_patches[name] = content

@@ -1,23 +1,28 @@
+"""Setup configuration for the tutorcodejail."""
+
 import io
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 
 def load_readme():
-    with io.open(os.path.join(HERE, "README.rst"), "rt", encoding="utf8") as f:
-        return f.read()
+    """Read the README.rst file."""
+    with io.open(os.path.join(HERE, "README.rst"), "rt", encoding="utf8") as file:
+        return file.read()
 
 
 def load_about():
+    """Read the about entry of tutorcodejail."""
     about = {}
     with io.open(
         os.path.join(HERE, "tutorcodejail", "__about__.py"),
         "rt",
         encoding="utf-8",
-    ) as f:
-        exec(f.read(), about)  # pylint: disable=exec-used
+    ) as file:
+        exec(file.read(), about)  # pylint: disable=exec-used
     return about
 
 
