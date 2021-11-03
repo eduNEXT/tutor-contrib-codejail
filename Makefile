@@ -39,14 +39,14 @@ quality: ## check coding style with pycodestyle and pylint
 	pycodestyle tutorcodejail *.py
 	pydocstyle tutorcodejail *.py
 	isort --check-only --diff --recursive tutorcodejail *.py
-	#python setup.py bdist_wheel
+	python setup.py bdist_wheel
 	make selfcheck
 
 requirements: ## install development environment requirements
 	pip install -r requirements/pip.txt
 	pip install -r requirements/pip-tools.txt
 	pip-sync requirements/dev.txt
-	#pip install -e .
+	pip install -e .
 
 test: ## run unitary tests and meassure coverage
 	#coverage run -m pytest
