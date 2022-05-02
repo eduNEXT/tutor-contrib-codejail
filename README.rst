@@ -1,8 +1,9 @@
-codejail plugin for `Tutor <https://docs.tutor.overhang.io>`__
-===================================================================================
+Codejail plugin for `Tutor`_
+============================
 
 Tutor plugin that enables execution of untrusted code in secure sandboxes using an external `service`_ based on the `codejail`_ library.
 
+.. _Tutor: https://docs.tutor.overhang.io
 .. _service: https://github.com/eduNEXT/codejailservice
 .. _codejail: https://github.com/openedx/codejail
 
@@ -39,7 +40,6 @@ Compatibility
 +-------------------+----------------+
 | Open edX Release  |  Tutor Version |
 +===================+================+
-+-------------------+----------------+
 |       Lilac       |    >= 12.x     |
 +-------------------+----------------+
 |       Maple       |    >= 13.x     |
@@ -61,7 +61,7 @@ Once the course is imported, go to any section and select an exercise (`section 
 
 .. _section example: http://studio.maple.edunext.link:8001/container/block-v1:edX+DemoX+Demo_Course+type@vertical+block@v-integral1
 
-.. image:: ./resourcesfiles/Codejailworking.png
+.. image:: ./docs/resources/Codejailworking.png
     :width: 725px
     :align: center
     :alt: Example when codejail is working
@@ -78,7 +78,7 @@ In case you forget to run ``tutor local init --limit=codejail`` for apparmor pro
     cannot create LoncapaProblem block-v1:edX+DemoX+Demo_Course+type@problem+block@integral1: Error while
     executing script code: Codejail API Service is unavailable. Please try again in a few minutes.
 
-.. image:: ./resourcesfiles/Codejailfail.png
+.. image:: ./docs/resources/Codejailfail.png
     :width: 750px
     :align: center
     :alt: Example when codejail is not working
@@ -91,7 +91,7 @@ Additional Resources
 
 Example course to test the Codejail service: `course_codejail_example.tar.gz`_
 
-.. _course_codejail_example.tar.gz: https://github.com/eduNEXT/tutor-contrib-codejail/blob/main/resourcesfiles/course_codejail_example.tar.gz
+.. _course_codejail_example.tar.gz: https://github.com/eduNEXT/tutor-contrib-codejail/blob/main/docs/resources/course_codejail_example.tar.gz
 
 How to Contribute
 -----------------
