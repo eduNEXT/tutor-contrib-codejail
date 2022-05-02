@@ -14,10 +14,14 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[13.0.0] - 2022-05-02
+~~~~~~~~~~~~~~~~~~~~
+
 Added
 _____
 
 * Add repo documentation.
+* Bump version according tutor practices for Maple release.
 
 [12.0.2] - 2022-04-29
 ~~~~~~~~~~~~~~~~~~~~
