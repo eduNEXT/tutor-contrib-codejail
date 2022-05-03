@@ -1,5 +1,5 @@
 codejail_apparmor-job:
-  image: ednxops/codejail_apparmor_loader:latest
+  image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }}
   privileged: true
   volumes:
     - ../plugins/codejail/apps/profiles/docker-edx-sandbox:/profiles/docker-edx-sandbox:ro
