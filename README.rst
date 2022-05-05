@@ -45,6 +45,11 @@ Compatibility
 |       Maple       |    >= 13.x     |
 +-------------------+----------------+
 
+**NOTE**: For the Open edx version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
+not included in ``open-release/lilac.master``. In order to use the service with the changes, please review `this PR`_.
+
+.. _this PR: https://github.com/openedx/edx-platform/pull/27795
+
 Functionality test
 ------------------
 
