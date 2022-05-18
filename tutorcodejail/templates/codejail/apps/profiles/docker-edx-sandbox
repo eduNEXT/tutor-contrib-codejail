@@ -39,12 +39,12 @@ profile docker-edx-sandbox flags=(attach_disconnected,mediate_deleted) {
     #
     # Python abstractions adapted from https://gitlab.com/apparmor/apparmor/-/raw/master/profiles/apparmor.d/abstractions/python
     #
-    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/lib/python{2.[4-7],3.[0-9]}/**.{pyc,so} mr,
-    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/lib/python{2.[4-7],3.[0-9]}/**.{egg,py,pth} r,
-    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/lib/python{2.[4-7],3.[0-9]}/{site,dist}-packages/ r,
+    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/**.{pyc,so} mr,
+    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/**.{egg,py,pth} r,
+    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/site-packages/ r,
     /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/lib-dynload/*.so mr,
 
-    /opt/pyenv/versions/{2.[4-7].*,3.[0-9].*}/include/python{2.[4-7],3.[0-9]}*/pyconfig.h r,
+    /opt/pyenv/versions/3.[0-9].*/include/python3.[0-9]*/pyconfig.h r,
 
 
     #
@@ -52,10 +52,10 @@ profile docker-edx-sandbox flags=(attach_disconnected,mediate_deleted) {
     # python installation
     #
     /sandbox/venv/** mr,
-    /opt/pyenv/versions/3.5.10/** mr,
+    /opt/pyenv/versions/{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}_sandbox/** mr,
     /tmp/codejail-*/ rix,
     /tmp/codejail-*/** wrix,
-    
+
     #
     # Whitelist particular shared objects from the system
     # python installation
