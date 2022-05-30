@@ -17,7 +17,7 @@ config = {
         "VERSION": __version__,
         "HOST": "codejailservice",
         "DOCKER_IMAGE": f"docker.io/ednxops/codejailservice:{__version__}",
-        "SANDBOX_PYTHON_VERSION": "3.5.10",
+        "SANDBOX_PYTHON_VERSION": "3.8.6",
     },
     "set": {},
 }

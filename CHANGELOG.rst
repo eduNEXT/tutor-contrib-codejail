@@ -14,6 +14,14 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[14.0.0] - 2022-05-30
+~~~~~~~~~~~~~~~~~~~~
+
+Added
+_____
+
+* Bump version according tutor practices for Nutmeg release.
+
 [13.0.0] - 2022-05-02
 ~~~~~~~~~~~~~~~~~~~~
 
