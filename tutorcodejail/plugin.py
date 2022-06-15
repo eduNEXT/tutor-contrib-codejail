@@ -16,6 +16,7 @@ config = {
         "VERSION": __version__,
         "HOST": "codejailservice",
         "DOCKER_IMAGE": f"docker.io/ednxops/codejailservice:{__version__}",
+        "APPARMOR_DOCKER_IMAGE": f"docker.io/ednxops/codejail_apparmor:{__version__}",
         "SANDBOX_PYTHON_VERSION": "3.8.6",
     },
     "overrides": {},
@@ -39,7 +40,7 @@ hooks.Filters.IMAGES_BUILD.add_item((
 hooks.Filters.IMAGES_BUILD.add_item((
     "codejail_apparmor",
     ("plugins", "codejail", "build", "codejail_apparmor"),
-    f"docker.io/ednxops/codejail_apparmor:{__version__}",
+    "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
     (),
 ))
 
@@ -52,7 +53,7 @@ hooks.Filters.IMAGES_PULL.add_item((
 
 hooks.Filters.IMAGES_PULL.add_item((
     "codejail_apparmor",
-    f"docker.io/ednxops/codejail_apparmor:{__version__}",
+    "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
 ))
 
 
@@ -64,7 +65,7 @@ hooks.Filters.IMAGES_PUSH.add_item((
 
 hooks.Filters.IMAGES_PUSH.add_item((
     "codejail_apparmor",
-    f"docker.io/ednxops/codejail_apparmor:{__version__}",
+    "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
 ))
 
 
