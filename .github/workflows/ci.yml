@@ -27,6 +27,3 @@ jobs:
     - name: Run the QA suite
       run: |
         make quality
-    - name: Unit tests
-      run: |
-        make test

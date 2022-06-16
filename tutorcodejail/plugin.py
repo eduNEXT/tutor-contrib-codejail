@@ -4,44 +4,103 @@ import os
 from glob import glob
 
 import pkg_resources
+from tutor import hooks
 
 from .__about__ import __version__
 
-templates = pkg_resources.resource_filename("tutorcodejail", "templates")
-
 config = {
-    "add": {
+    "unique": {
         "SECRET_KEY": "{{ 24|random_string }}",
     },
     "defaults": {
         "VERSION": __version__,
         "HOST": "codejailservice",
         "DOCKER_IMAGE": f"docker.io/ednxops/codejailservice:{__version__}",
+        "APPARMOR_DOCKER_IMAGE": f"docker.io/ednxops/codejail_apparmor:{__version__}",
         "SANDBOX_PYTHON_VERSION": "3.8.6",
     },
-    "set": {},
-}
-
-hooks = {
-    "build-image": {
-        "codejail": "{{ CODEJAIL_DOCKER_IMAGE }}",
-        "codejail_apparmor": f"docker.io/ednxops/codejail_apparmor:{__version__}",
-    },
-    "remote-image": {
-        "codejail": "{{ CODEJAIL_DOCKER_IMAGE }}",
-        "codejail_apparmor": f"docker.io/ednxops/codejail_apparmor:{__version__}",
-    },
-    "init": ["codejail_apparmor"],
+    "overrides": {},
 }
 
 
-def patches():
-    """Retrieve all the patches of tutorcodejail."""
-    all_patches = {}
-    patches_dir = pkg_resources.resource_filename("tutorcodejail", "patches")
-    for path in glob(os.path.join(patches_dir, "*")):
-        with open(path, encoding="utf-8") as patch_file:
-            name = os.path.basename(path)
-            content = patch_file.read()
-            all_patches[name] = content
-    return all_patches
+hooks.Filters.COMMANDS_INIT.add_item((
+    "codejail_apparmor",
+    ("codejail", "tasks", "codejail_apparmor", "init"),
+))
+
+
+hooks.Filters.IMAGES_BUILD.add_item((
+    "codejail",
+    ("plugins", "codejail", "build", "codejail"),
+    "{{ CODEJAIL_DOCKER_IMAGE }}",
+    (),
+))
+
+
+hooks.Filters.IMAGES_BUILD.add_item((
+    "codejail_apparmor",
+    ("plugins", "codejail", "build", "codejail_apparmor"),
+    "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
+    (),
+))
+
+
+hooks.Filters.IMAGES_PULL.add_item((
+    "codejail",
+    "{{ CODEJAIL_DOCKER_IMAGE }}",
+))
+
+
+hooks.Filters.IMAGES_PULL.add_item((
+    "codejail_apparmor",
+    "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
+))
+
+
+hooks.Filters.IMAGES_PUSH.add_item((
+    "codejail",
+    "{{ CODEJAIL_DOCKER_IMAGE }}",
+))
+
+
+hooks.Filters.IMAGES_PUSH.add_item((
+    "codejail_apparmor",
+    "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
+))
+
+
+# Boilerplate code
+# Add the "templates" folder as a template root
+hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
+    pkg_resources.resource_filename("tutorcodejail", "templates")
+)
+# Render the "build" and "apps" folders
+hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
+    [
+        ("codejail/build", "plugins"),
+        ("codejail/apps", "plugins"),
+    ],
+)
+# Load patches from files
+for path in glob(
+    os.path.join(
+        pkg_resources.resource_filename("tutorcodejail", "patches"),
+        "*",
+    )
+):
+    with open(path, encoding="utf-8") as patch_file:
+        hooks.Filters.ENV_PATCHES.add_item((os.path.basename(path), patch_file.read()))
+# Add configuration entries
+hooks.Filters.CONFIG_DEFAULTS.add_items(
+    [
+        (f"CODEJAIL_{key}", value)
+        for key, value in config.get("defaults", {}).items()
+    ]
+)
+hooks.Filters.CONFIG_UNIQUE.add_items(
+    [
+        (f"CODEJAIL_{key}", value)
+        for key, value in config.get("unique", {}).items()
+    ]
+)
+hooks.Filters.CONFIG_OVERRIDES.add_items(list(config.get("overrides", {}).items()))
