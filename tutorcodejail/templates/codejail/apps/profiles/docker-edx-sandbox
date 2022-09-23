@@ -1,6 +1,6 @@
 #include <tunables/global>
 
-profile docker-edx-sandbox flags=(attach_disconnected,mediate_deleted) {
+profile docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }} flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
 
   network,
@@ -9,7 +9,7 @@ profile docker-edx-sandbox flags=(attach_disconnected,mediate_deleted) {
   umount,
   signal (receive) peer=unconfined,
   signal (receive) peer=cri-containerd.apparmor.d,
-  signal (send,receive) peer=docker-edx-sandbox,
+  signal (send,receive) peer=docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }},
 
   deny @{PROC}/* w,   # deny write for all files directly in /proc (not in a subdir)
   # deny write to files not in /proc/<number>/** or /proc/sys/**
@@ -30,7 +30,7 @@ profile docker-edx-sandbox flags=(attach_disconnected,mediate_deleted) {
   deny /sys/firmware/** rwklx,
   deny /sys/kernel/security/** rwklx,
 
-  ptrace (trace,read) peer=docker-edx-sandbox,
+  ptrace (trace,read) peer=docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }},
 
   /sandbox/venv/bin/python Cx -> child,
   profile child flags=(attach_disconnected,mediate_deleted){

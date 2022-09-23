@@ -1,6 +1,8 @@
-codejail_apparmor-job:
+codejail-apparmor-job:
   image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }}
   privileged: true
+  environment:
+    SKIP_INIT: "{{ CODEJAIL_SKIP_INIT }}"
   volumes:
     - ../plugins/codejail/apps/profiles/docker-edx-sandbox:/profiles/docker-edx-sandbox:ro
     - /sys:/sys

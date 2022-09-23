@@ -1,0 +1,5 @@
+if [  "$SKIP_INIT" == "True" ]; then
+    echo "Skipped AppArmor initialization"
+else
+    /usr/bin/loader -logtostderr -v=2 /profiles
+fi

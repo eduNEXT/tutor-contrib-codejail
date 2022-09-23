@@ -1,0 +1,86 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codejailservice
+  labels:
+    app.kubernetes.io/name: codejailservice
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: codejailservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: codejailservice
+      annotations:
+        {% if CODEJAIL_ENFORCE_APPARMOR %}
+        container.apparmor.security.beta.kubernetes.io/codejailservice: "localhost/docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}"
+        {% endif %}
+    spec:
+      containers:
+        - name: codejailservice
+          image: {{ CODEJAIL_DOCKER_IMAGE }}
+          ports:
+            - containerPort: 8550
+          volumeMounts:
+            - mountPath: /openedx/codejailservice/codejailservice/tutor.py
+              name: settings-codejail
+              subPath: tutor.py
+      volumes:
+        - name: settings-codejail
+          configMap:
+            name: settings-codejail
+{% if CODEJAIL_ENABLE_K8S_DAEMONSET %}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: codejail-aa-loader
+  labels:
+    app.kubernetes.io/name: codejail-aa-loader
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: codejail-aa-loader
+  template:
+    metadata:
+      name: codejail-aa-loader
+      labels:
+        app.kubernetes.io/name: codejail-aa-loader
+    spec:
+      containers:
+      - name: apparmor-loader
+        image: google/apparmor-loader:latest
+        args:
+          # Tell the loader to pull the /profiles directory every 30 seconds.
+          - -poll
+          - 30s
+          - /profiles
+        securityContext:
+          # The loader requires root permissions to actually load the profiles.
+          privileged: true
+        volumeMounts:
+        - name: sys
+          mountPath: /sys
+          readOnly: true
+        - name: apparmor-includes
+          mountPath: /etc/apparmor.d
+          readOnly: true
+        - name: profiles
+          mountPath: /profiles
+          readOnly: true
+      volumes:
+      # The /sys directory must be mounted to interact with the AppArmor module.
+      - name: sys
+        hostPath:
+          path: /sys
+      # The /etc/apparmor.d directory is required for most apparmor include templates.
+      - name: apparmor-includes
+        hostPath:
+          path: /etc/apparmor.d
+      # Map in the profile data.
+      - name: profiles
+        configMap:
+          name: codejail-profile
+{% endif %}

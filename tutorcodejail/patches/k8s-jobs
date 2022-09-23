@@ -1,0 +1,21 @@
+---
+# Dummy job that doesn't actually load the profile.
+# To enforce apparmor we need to load the profile
+# on each node, for that reason we use a DaemonSet
+# defined in the k8s-deployments patch.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: codejail-apparmor-job
+  labels:
+    app.kubernetes.io/component: job
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: codejail-apparmor-loader
+        image: busybox:1.28
+        env:
+          - name: SKIP_INIT
+            value: "True"
