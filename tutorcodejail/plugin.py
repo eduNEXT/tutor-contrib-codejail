@@ -14,9 +14,9 @@ config = {
     },
     "defaults": {
         "VERSION": __version__,
-        "HOST": "codejailservice",
+        "APPARMOR_DOCKER_IMAGE": "docker.io/ednxops/codejail_apparmor_loader:latest",
         "DOCKER_IMAGE": f"docker.io/ednxops/codejailservice:{__version__}",
-        "APPARMOR_DOCKER_IMAGE": f"docker.io/ednxops/codejail_apparmor:{__version__}",
+        "HOST": "codejailservice",
         "SANDBOX_PYTHON_VERSION": "3.8.6",
     },
     "overrides": {},

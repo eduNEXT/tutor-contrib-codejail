@@ -34,6 +34,13 @@ Finally, the platform can be run as usual:
 
     tutor local quickstart
 
+Configuration
+-------------
+
+- ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
+- ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:14.0.0``)
+- ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.8.6``)
+
 Compatibility
 -------------
 
@@ -59,7 +66,7 @@ How to know if codejail is working
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The easiest way to test whether codejail is working is to validate it in ``Studio`` with a course
-that has loncapa problems exercises.
+that has loncapa problems.
 
 This test was performed on the Maple version of Open edx, using the course ``course_codejail_example.tar.gz``
 found in the additional resources section.
@@ -78,8 +85,8 @@ In this case, the section's content will render correctly and will be working as
 Possible failure case
 ~~~~~~~~~~~~~~~~~~~~~
 
-In case you forget to run ``tutor local init --limit=codejail`` for apparmor profile, the error you can find in 
-``Studio`` is as follows::
+In case you forget to run ``tutor local init --limit=codejail`` for apparmor profile, this error in
+``Studio`` will arise::
 
     Error formatting HTML for problem:
     cannot create LoncapaProblem block-v1:edX+DemoX+Demo_Course+type@problem+block@integral1: Error while
