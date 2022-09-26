@@ -39,6 +39,9 @@ Configuration
 
 - ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
 - ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:14.0.0``)
+- ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
+- ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
+- ``CODEJAIL_SKIP_INIT`` (default: ``False``)
 - ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.8.6``)
 
 Compatibility
@@ -58,6 +61,32 @@ Compatibility
 not included in ``open-release/lilac.master``. In order to use the service with the changes, please review `this PR`_.
 
 .. _this PR: https://github.com/openedx/edx-platform/pull/27795
+
+Kubernetes Support
+------------------
+
+The CodeJail service provides a sandbox to run arbitrary code. Security enforcement
+in the sandbox is done through AppArmor, this means that AppArmor must be installed
+in the host machine and the `provided profile`_ must be loaded.
+
+.. _provided profile: tutorcodejail/templates/codejail/apps/profiles/docker-edx-sandbox
+
+The plugin provides an init task that runs a privileged container capable of loading
+the needed AppArmor profile unto your machine. This is only compatible with a docker
+installation. In Kubernetes you must guarantee that each node of your cluster has
+AppArmor installed and the profile loaded, for that reason the one time initialization
+task that is used in the init is skipped when running on kubernetes.
+
+The plugins offers the possibility to load the AppArmor profile using a DaemonSet,
+assuming the nodes are already running AppArmor. To do so you must set
+``CODEJAIL_ENABLE_K8S_DAEMONSET`` to ``True``.
+
+If, at your own discretion, want to run the service without enforcing the AppArmor
+profile you can set ``CODEJAIL_ENFORCE_APPARMOR`` to ``False``.
+
+More info about this discussion can be found on `this issue`_.
+
+.. _this issue: https://github.com/eduNEXT/tutor-contrib-codejail/issues/24
 
 Functionality test
 ------------------

@@ -1,0 +1,6 @@
+- name: codejail-profile
+  files:
+  - plugins/codejail/apps/profiles/docker-edx-sandbox
+- name: settings-codejail
+  files:
+  - plugins/codejail/apps/config/tutor.py

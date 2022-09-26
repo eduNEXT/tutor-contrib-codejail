@@ -14,6 +14,14 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+Added
+-----
+* Include k8s templates.
+* Add a setting to run the service without codejail.
+* Add a setting to skip the initialization job.
+* Add a section in the readme with the available configuration values and their defaults.
+
+
 [14.0.0] - 2022-05-30
 ~~~~~~~~~~~~~~~~~~~~
 

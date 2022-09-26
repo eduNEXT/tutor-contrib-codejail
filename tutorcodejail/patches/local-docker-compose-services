@@ -3,8 +3,10 @@ codejailservice:
   image: {{ CODEJAIL_DOCKER_IMAGE }}
   environment:
     FLASK_APP_SETTINGS: codejailservice.config.ProductionConfig
+  {% if CODEJAIL_ENFORCE_APPARMOR %}
   security_opt:
-    - apparmor:docker-edx-sandbox
+    - apparmor:docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}
+  {% endif %}
   volumes:
     - ../plugins/codejail/apps/config/tutor.py:/openedx/codejailservice/codejailservice/tutor.py:ro
     - ../../data/codejail:/openedx/data
