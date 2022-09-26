@@ -14,6 +14,9 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[14.1.0] - 2022-09-26
+~~~~~~~~~~~~~~~~~~~~
+
 Added
 -----
 * Include k8s templates.
