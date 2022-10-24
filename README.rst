@@ -47,15 +47,17 @@ Configuration
 Compatibility
 -------------
 
-+-------------------+----------------+
-| Open edX Release  |  Tutor Version |
-+===================+================+
-|       Lilac       |    >= 12.x     |
-+-------------------+----------------+
-|       Maple       |    >= 13.x     |
-+-------------------+----------------+
-|       Nutmeg      |    >= 14.x     |
-+-------------------+----------------+
++------------------+---------------+
+| Open edX Release | Tutor Version |
++==================+===============+
+| Lilac            | >= 12.x       |
++------------------+---------------+
+| Maple            | >= 13.x       |
++------------------+---------------+
+| Nutmeg           | >= 14.x       |
++------------------+---------------+
+| Olive            | >= 15.x       |
++------------------+---------------+
 
 **NOTE**: For the Open edx version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
 not included in ``open-release/lilac.master``. In order to use the service with the changes, please review `this PR`_.
