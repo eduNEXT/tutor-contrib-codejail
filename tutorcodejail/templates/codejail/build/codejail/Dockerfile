@@ -1,4 +1,4 @@
-FROM docker.io/ubuntu:20.04 as minimal
+FROM docker.io/ubuntu:22.04 as minimal
 MAINTAINER edunext.co <contact@edunext.co>
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,7 +12,7 @@ FROM minimal as python
 RUN apt update && \
     apt install -y libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git subversion
+    xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git subversion
 ENV PYENV_ROOT /opt/pyenv
 RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v1.2.21 --depth 1
 
@@ -51,7 +51,6 @@ ENV VIRTUAL_ENV /sandbox/venv/
 WORKDIR /var/tmp
 RUN mkdir -p common/lib/
 
-COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/common/lib/sandbox-packages common/lib/sandbox-packages
 COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/requirements/edx-sandbox/py38.txt py38.txt
 RUN pip3 install -r py38.txt
 
