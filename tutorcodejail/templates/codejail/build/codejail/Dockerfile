@@ -3,7 +3,7 @@ MAINTAINER edunext.co <contact@edunext.co>
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
-    apt install -y build-essential curl git language-pack-en
+    apt install -y build-essential curl git language-pack-en llvm
 ENV LC_ALL en_US.UTF-8
 
 ###### Install python with pyenv in /opt/pyenv and create virtualenv in /openedx/venv
