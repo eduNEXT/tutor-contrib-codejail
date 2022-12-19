@@ -1,9 +1,9 @@
-FROM docker.io/ubuntu:20.04 as minimal
+FROM docker.io/ubuntu:22.04 as minimal
 MAINTAINER edunext.co <contact@edunext.co>
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
-    apt install -y build-essential curl git language-pack-en
+    apt install -y build-essential curl git language-pack-en llvm
 ENV LC_ALL en_US.UTF-8
 
 ###### Install python with pyenv in /opt/pyenv and create virtualenv in /openedx/venv
@@ -12,9 +12,9 @@ FROM minimal as python
 RUN apt update && \
     apt install -y libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git subversion
+    xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git subversion
 ENV PYENV_ROOT /opt/pyenv
-RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v1.2.21 --depth 1
+RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v2.3.5 --depth 1
 
 ARG CODEJAILSERVICE_PYTHON_VERSION=3.8.6
 RUN $PYENV_ROOT/bin/pyenv install $CODEJAILSERVICE_PYTHON_VERSION
@@ -40,7 +40,7 @@ ENV VIRTUAL_ENV /openedx/venv/
 COPY --from=code /openedx/codejailservice /openedx/codejailservice
 WORKDIR /openedx/codejailservice
 RUN pip3 install -r requirements/base.txt
-RUN pip3 install uwsgi==2.0.20
+RUN pip3 install uwsgi==2.0.21
 
 ###### Install python requirements in virtualenv
 FROM python as sandbox-python-requirements
@@ -51,7 +51,6 @@ ENV VIRTUAL_ENV /sandbox/venv/
 WORKDIR /var/tmp
 RUN mkdir -p common/lib/
 
-COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/common/lib/sandbox-packages common/lib/sandbox-packages
 COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/requirements/edx-sandbox/py38.txt py38.txt
 RUN pip3 install -r py38.txt
 
