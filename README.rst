@@ -26,7 +26,7 @@ Then, you will have to install the "docker-edx-sandbox" apparmor profile on your
 .. code-block:: bash
 
     tutor config save
-    tutor local init --limit=codejail
+    tutor local do init --limit codejail
 
 Finally, the platform can be run as usual:
 
@@ -102,9 +102,9 @@ that has loncapa problems.
 This test was performed on the Maple version of Open edx, using the course ``course_codejail_example.tar.gz``
 found in the additional resources section.
 
-Once the course is imported, go to any section and select an exercise (`section example`_`), the proper result is:
+Once the course is imported, go to any section and select an exercise (`section example`_), the proper result is:
 
-.. _section example: http://studio.maple.edunext.link:8001/container/block-v1:edX+DemoX+Demo_Course+type@vertical+block@v-integral1
+.. _section example: http://studio.local.overhang.io:8001/container/block-v1:edX+DemoX+Demo_Course+type@vertical+block@v-integral1
 
 .. image:: ./docs/resources/Codejailworking.png
     :width: 725px
@@ -116,7 +116,7 @@ In this case, the section's content will render correctly and will be working as
 Possible failure case
 ~~~~~~~~~~~~~~~~~~~~~
 
-In case you forget to run ``tutor local init --limit=codejail`` for apparmor profile, this error in
+In case you forget to run ``tutor local do init --limit codejail`` for apparmor profile, this error in
 ``Studio`` will arise::
 
     Error formatting HTML for problem:
