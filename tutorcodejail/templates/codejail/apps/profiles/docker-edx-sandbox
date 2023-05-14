@@ -55,6 +55,7 @@ profile docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }} flags=(attach_d
     /opt/pyenv/versions/{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}_sandbox/** mr,
     /tmp/codejail-*/ rix,
     /tmp/codejail-*/** wrix,
+    /tmp/* wrix,
 
     #
     # Whitelist particular shared objects from the system
