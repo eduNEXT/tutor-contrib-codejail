@@ -14,6 +14,24 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[15.1.0] - 2023-05-25
+~~~~~~~~~~~~~~~~~~~~
+
+Added
+_____
+
+* Update readme following latest changes (#34)
+* Allow to use tmp in python executions.
+
+[15.0.0] - 2023-01-12
+~~~~~~~~~~~~~~~~~~~~
+
+Added
+_____
+
+* Add support for Olive release (#28).
+* Adds mantainer group.
+
 [14.1.0] - 2022-09-26
 ~~~~~~~~~~~~~~~~~~~~
 
