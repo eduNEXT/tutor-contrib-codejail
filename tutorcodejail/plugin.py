@@ -21,6 +21,15 @@ config = {
         "HOST": "codejailservice",
         "SANDBOX_PYTHON_VERSION": "3.8.6",
         "SKIP_INIT": False,
+        "LIMIT_CPU": "1",
+        "LIMIT_MEMORY": "1Gi",
+        "REQUEST_CPU": "512m",
+        "REQUEST_MEMORY": "512Mi",
+        "ENABLE_HPA": False,
+        "HPA_MIN_REPLICAS": 1,
+        "HPA_MAX_REPLICAS": 4,
+        "AVG_CPU": 65,
+        "AVG_MEMORY": 65
     },
     "overrides": {},
 }
