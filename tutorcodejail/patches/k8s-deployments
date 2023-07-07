@@ -27,6 +27,13 @@ spec:
             - mountPath: /openedx/codejailservice/codejailservice/tutor.py
               name: settings-codejail
               subPath: tutor.py
+          resources:
+            limits:
+              cpu: "{{ CODEJAIL_LIMIT_CPU }}"
+              memory: "{{ CODEJAIL_LIMIT_MEMORY }}"
+            requests:
+              cpu: "{{ CODEJAIL_REQUEST_CPU }}"
+              memory: "{{ CODEJAIL_REQUEST_MEMORY }}"
       volumes:
         - name: settings-codejail
           configMap:
