@@ -2,9 +2,9 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: codejail-hpa
+  name: codejail
   labels:
-    app.kubernetes.io/name: codejail-hpa
+    app.kubernetes.io/name: codejail
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
