@@ -26,10 +26,10 @@ config = {
         "REQUEST_CPU": "512m",
         "REQUEST_MEMORY": "512Mi",
         "ENABLE_HPA": False,
-        "HPA_MIN_REPLICAS": 1,
-        "HPA_MAX_REPLICAS": 4,
+        "MIN_REPLICAS": 1,
+        "MAX_REPLICAS": 4,
         "AVG_CPU": 65,
-        "AVG_MEMORY": 65
+        "AVG_MEMORY": "500Mi",
     },
     "overrides": {},
 }
@@ -91,6 +91,7 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     [
         ("codejail/build", "plugins"),
         ("codejail/apps", "plugins"),
+        ("codejail/k8s", "plugins"),
     ],
 )
 # Load patches from files
