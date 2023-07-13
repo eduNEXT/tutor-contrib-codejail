@@ -1,5 +1,5 @@
 {%- if CODEJAIL_ENABLE_HPA %}
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: codejail
@@ -12,21 +12,7 @@ spec:
     name: codejailservice
   minReplicas: {{ CODEJAIL_MIN_REPLICAS }}
   maxReplicas: {{ CODEJAIL_MAX_REPLICAS }}
-  metrics:
   {%- if CODEJAIL_AVG_CPU > 0 %}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ CODEJAIL_AVG_CPU }}
-  {%- endif %}
-  {%- if CODEJAIL_AVG_MEMORY|length %}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ CODEJAIL_AVG_MEMORY }}
+  targetCPUUtilizationPercentage: {{ CODEJAIL_AVG_CPU }}
   {%- endif %}
 {%- endif %}
