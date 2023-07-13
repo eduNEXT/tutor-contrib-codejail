@@ -44,7 +44,7 @@ setup(
     packages=find_packages(exclude=["tests*"]),
     include_package_data=True,
     python_requires=">=3.5",
-    install_requires=["tutor"],
+    install_requires=["tutor<15"],
     entry_points={"tutor.plugin.v1": ["codejail = tutorcodejail.plugin"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
