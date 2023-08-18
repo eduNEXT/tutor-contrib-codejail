@@ -32,7 +32,7 @@ Finally, the platform can be run as usual:
 
 .. code-block:: bash
 
-    tutor local quickstart
+    tutor local launch
 
 Configuration
 -------------
@@ -57,6 +57,8 @@ Compatibility
 | Nutmeg           | >= 14.x       |
 +------------------+---------------+
 | Olive            | >= 15.x       |
++------------------+---------------+
+| Palm             | >= 16.x       |
 +------------------+---------------+
 
 **NOTE**: For the Open edx version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
