@@ -21,6 +21,9 @@ spec:
       containers:
         - name: codejailservice
           image: {{ CODEJAIL_DOCKER_IMAGE }}
+          env:
+            - name: FLASK_APP_SETTINGS
+              value: codejailservice.tutor.ProductionConfig
           ports:
             - containerPort: 8550
           volumeMounts:
