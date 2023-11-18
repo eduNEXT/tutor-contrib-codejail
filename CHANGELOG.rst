@@ -14,6 +14,15 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[17.0.0] - 2023-11-20
+~~~~~~~~~~~~~~~~~~~~~
+
+Added
+_____
+
+* Allows you to add extra pip requirements to your codejail sandbox (#42)
+* Add support form quince release (#43)
+
 [16.0.0] - 2023-08-18
 ~~~~~~~~~~~~~~~~~~~~~
 

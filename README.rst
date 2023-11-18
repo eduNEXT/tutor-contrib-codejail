@@ -37,6 +37,8 @@ Finally, the platform can be run as usual:
 Configuration
 -------------
 
+For some of these configurations to work correctly, the codejail image must be built again. Command to build codejail: ``tutor images build codejail``.
+
 - ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
 - ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:14.0.0``)
 - ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
@@ -66,6 +68,8 @@ Compatibility
 | Olive            | >= 15.x       |
 +------------------+---------------+
 | Palm             | >= 16.x       |
++------------------+---------------+
+| Quince           | >= 17.x       |
 +------------------+---------------+
 
 **NOTE**: For the Open edx version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
