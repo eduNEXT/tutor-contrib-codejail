@@ -43,6 +43,13 @@ Configuration
 - ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
 - ``CODEJAIL_SKIP_INIT`` (default: ``False``)
 - ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.8.6``)
+- ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (optional) A list of pip requirements to add to your sandbox.
+    
+    .. code-block:: yaml
+
+        CODEJAIL_EXTRA_PIP_REQUIREMENTS:
+        - pybryt
+
 
 Compatibility
 -------------
