@@ -56,7 +56,7 @@ RUN pip3 install -r py38.txt
 
 # Allows you to add extra pip requirements to your codejail sandbox.
 {% if CODEJAIL_EXTRA_PIP_REQUIREMENTS is defined %}
-{% for extra_requirements in CODEJAIL_EXTRA_PIP_REQUIREMENTS %}RUN {% if is_buildkit_enabled() %}--mount=type=cache,target=/openedx/.cache/pip,sharing=shared {% endif %}pip install '{{ extra_requirements }}'
+{% for extra_requirements in CODEJAIL_EXTRA_PIP_REQUIREMENTS %}RUN --mount=type=cache,target=/openedx/.cache/pip,sharing=shared pip install '{{ extra_requirements }}'
 {% endfor %}
 {% endif %}
 
