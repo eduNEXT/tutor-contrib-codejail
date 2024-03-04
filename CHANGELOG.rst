@@ -14,6 +14,12 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[17.0.1] - 2023-11-20
+~~~~~~~~~~~~~~~~~~~~~
+
+* fix: remove deprecated is_buildkit_enabled which now always evaluates to 'true' (#47)
+
+
 [17.0.0] - 2023-11-20
 ~~~~~~~~~~~~~~~~~~~~~
 
