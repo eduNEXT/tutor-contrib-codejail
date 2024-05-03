@@ -4,7 +4,7 @@ from __future__ import annotations
 import os
 from glob import glob
 
-import pkg_resources
+import importlib_resources
 from tutor import hooks
 
 from .__about__ import __version__
@@ -48,8 +48,8 @@ MY_INIT_TASKS: list[tuple[str, tuple[str, ...], int]] = [
 # and add it to the CLI_DO_INIT_TASKS filter, which tells Tutor to
 # run it as part of the `init` job.
 for service, template_path, priority in MY_INIT_TASKS:
-    full_path: str = pkg_resources.resource_filename(
-        "tutorcodejail", os.path.join("templates", *template_path)
+    full_path: str = str(
+        importlib_resources.files("tutorcodejail") / os.path.join("templates", *template_path)
     )
     with open(full_path, encoding="utf-8") as init_task_file:
         init_task: str = init_task_file.read()
@@ -99,7 +99,7 @@ hooks.Filters.IMAGES_PUSH.add_item((
 # Boilerplate code
 # Add the "templates" folder as a template root
 hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
-    pkg_resources.resource_filename("tutorcodejail", "templates")
+    str(importlib_resources.files("tutorcodejail") / "templates")
 )
 # Render the "build" and "apps" folders
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
@@ -110,12 +110,7 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     ],
 )
 # Load patches from files
-for path in glob(
-    os.path.join(
-        pkg_resources.resource_filename("tutorcodejail", "patches"),
-        "*",
-    )
-):
+for path in glob(str(importlib_resources.files("tutorcodejail") / "patches" / "*")):
     with open(path, encoding="utf-8") as patch_file:
         hooks.Filters.ENV_PATCHES.add_item((os.path.basename(path), patch_file.read()))
 # Add configuration entries
