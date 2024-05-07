@@ -14,21 +14,21 @@ RUN apt update && \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git subversion
 ENV PYENV_ROOT /opt/pyenv
-RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v2.3.5 --depth 1
+RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v2.4.0 --depth 1
 
-ARG CODEJAILSERVICE_PYTHON_VERSION=3.8.6
+ARG CODEJAILSERVICE_PYTHON_VERSION=3.11.9
 RUN $PYENV_ROOT/bin/pyenv install $CODEJAILSERVICE_PYTHON_VERSION
 
 ARG SANDBOX_PYTHON_VERSION={{ CODEJAIL_SANDBOX_PYTHON_VERSION }}
-RUN git clone https://github.com/s1341/pyenv-alias.git $PYENV_ROOT/plugins/pyenv-alias
-RUN VERSION_ALIAS={{ CODEJAIL_SANDBOX_PYTHON_VERSION }}_sandbox $PYENV_ROOT/bin/pyenv install $SANDBOX_PYTHON_VERSION
+RUN git clone https://github.com/esinker/pyenv-version-alias $PYENV_ROOT/plugins/pyenv-alias
+RUN VERSION_ALIAS={{ CODEJAIL_SANDBOX_PYTHON_VERSION }}_sandbox $PYENV_ROOT/bin/pyenv install -f $SANDBOX_PYTHON_VERSION
 
 RUN $PYENV_ROOT/versions/$CODEJAILSERVICE_PYTHON_VERSION/bin/python -m venv /openedx/venv
 RUN $PYENV_ROOT/versions/"$SANDBOX_PYTHON_VERSION"_sandbox/bin/python -m venv --copies /sandbox/venv
 
 ###### Codejail service code
 FROM minimal as code
-RUN git clone https://github.com/eduNEXT/codejailservice.git --branch {{ CODEJAIL_VERSION }} --depth 1 /openedx/codejailservice
+RUN git clone {{ CODEJAIL_SERVICE_REPOSITORY }} --branch {{ CODEJAIL_SERVICE_VERSION }} --depth 1 /openedx/codejailservice
 WORKDIR /openedx/codejailservice
 
 ###### Install python requirements in virtualenv
@@ -51,8 +51,8 @@ ENV VIRTUAL_ENV /sandbox/venv/
 WORKDIR /var/tmp
 RUN mkdir -p common/lib/
 
-COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/requirements/edx-sandbox/py38.txt py38.txt
-RUN pip3 install -r py38.txt
+COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/requirements/edx-sandbox/releases/redwood.txt redwood.txt
+RUN pip3 install -r redwood.txt
 
 # Allows you to add extra pip requirements to your codejail sandbox.
 {% if CODEJAIL_EXTRA_PIP_REQUIREMENTS is defined %}

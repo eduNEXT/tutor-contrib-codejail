@@ -7,7 +7,7 @@ __pycache__/
 TODO
 # Distribution / packaging
 .Python
-build/
+/build/
 develop-eggs/
 dist/
 downloads/
