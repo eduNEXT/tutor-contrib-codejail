@@ -30,6 +30,7 @@ config = {
         "MIN_REPLICAS": 1,
         "MAX_REPLICAS": 4,
         "AVG_CPU": 65,
+        "SERVICE_VERSION": "main",
     },
     "overrides": {},
 }
