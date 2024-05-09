@@ -20,7 +20,7 @@ config = {
         "ENABLE_K8S_DAEMONSET": False,
         "ENFORCE_APPARMOR": True,
         "HOST": "codejailservice",
-        "SANDBOX_PYTHON_VERSION": "3.8.6",
+        "SANDBOX_PYTHON_VERSION": "3.11.9",
         "SKIP_INIT": False,
         "LIMIT_CPU": "1",
         "LIMIT_MEMORY": "1Gi",
