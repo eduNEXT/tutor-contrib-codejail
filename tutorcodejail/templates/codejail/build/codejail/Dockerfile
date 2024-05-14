@@ -29,6 +29,7 @@ RUN $PYENV_ROOT/versions/"$SANDBOX_PYTHON_VERSION"_sandbox/bin/python -m venv --
 ###### Codejail service code
 FROM minimal as code
 RUN git clone https://github.com/eduNEXT/codejailservice.git --branch {{ CODEJAIL_SERVICE_VERSION }} --depth 1 /openedx/codejailservice
+RUN curl https://raw.githubusercontent.com/openedx/edx-platform/open-release/redwood.master/requirements/edx-sandbox/releases/redwood.txt -o /openedx/redwood.txt
 WORKDIR /openedx/codejailservice
 
 ###### Install python requirements in virtualenv
@@ -51,7 +52,7 @@ ENV VIRTUAL_ENV /sandbox/venv/
 WORKDIR /var/tmp
 RUN mkdir -p common/lib/
 
-COPY --from={{ DOCKER_IMAGE_OPENEDX }} /openedx/edx-platform/requirements/edx-sandbox/releases/redwood.txt redwood.txt
+COPY --from=code /openedx/redwood.txt redwood.txt
 RUN pip3 install -r redwood.txt
 
 # Allows you to add extra pip requirements to your codejail sandbox.
