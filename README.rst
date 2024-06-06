@@ -1,7 +1,8 @@
 Codejail plugin for `Tutor`_
 ============================
 
-Tutor plugin that enables execution of untrusted code in secure sandboxes using an external `service`_ based on the `codejail`_ library.
+Tutor plugin that configures and runs Codejail using a REST API service. Codejail allows for the 
+secure execution of untrusted code within sandboxes, providing a safe environment for running potentially dangerous code.
 
 .. _Tutor: https://docs.tutor.overhang.io
 .. _service: https://github.com/eduNEXT/codejailservice
@@ -10,18 +11,23 @@ Tutor plugin that enables execution of untrusted code in secure sandboxes using 
 Installation
 ------------
 
+To install the latest version run:
+
 .. code-block:: bash
 
     pip install git+https://github.com/edunext/tutor-contrib-codejail
 
+You can install a specific version by adding the tag at the end, e.g.: ``#v17.0.0``.
+
 Usage
 -----
+Enable the plugin with:
 
 .. code-block:: bash
 
     tutor plugins enable codejail
 
-Then, you will have to install the "docker-edx-sandbox" apparmor profile on your host:
+Install the "docker-edx-sandbox" AppArmor profile on your host:
 
 .. code-block:: bash
 
@@ -37,10 +43,10 @@ Finally, the platform can be run as usual:
 Configuration
 -------------
 
-For some of these configurations to work correctly, the codejail image must be built again. Command to build codejail: ``tutor images build codejail``.
+To customize the configuration, update the following settings in Tutor:
 
 - ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
-- ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:14.0.0``)
+- ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:<_version_>``)
 - ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
 - ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
 - ``CODEJAIL_SKIP_INIT`` (default: ``False``)
@@ -51,6 +57,8 @@ For some of these configurations to work correctly, the codejail image must be b
 
         CODEJAIL_EXTRA_PIP_REQUIREMENTS:
         - pybryt
+        
+**NOTE:** For some configurations to work, the codejail image must be rebuilt. Command to rebuild codejail: ``tutor images build codejail``.
 
 
 Compatibility
@@ -72,8 +80,8 @@ Compatibility
 | Quince           | >= 17.x       |
 +------------------+---------------+
 
-**NOTE**: For the Open edx version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
-not included in ``open-release/lilac.master``. In order to use the service with the changes, please review `this PR`_.
+**NOTE**: For the Open edX version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
+not included in ``open-release/lilac.master``. To use the service with the changes, please review `this PR`_.
 
 .. _this PR: https://github.com/openedx/edx-platform/pull/27795
 
@@ -81,42 +89,33 @@ Kubernetes Support
 ------------------
 
 The CodeJail service provides a sandbox to run arbitrary code. Security enforcement
-in the sandbox is done through AppArmor, this means that AppArmor must be installed
+in the sandbox is done through *AppArmor*, this means that AppArmor must be installed
 in the host machine and the `provided profile`_ must be loaded.
 
 .. _provided profile: tutorcodejail/templates/codejail/apps/profiles/docker-edx-sandbox
 
-The plugin provides an init task that runs a privileged container capable of loading
-the needed AppArmor profile unto your machine. This is only compatible with a docker
-installation. In Kubernetes you must guarantee that each node of your cluster has
-AppArmor installed and the profile loaded, for that reason the one time initialization
-task that is used in the init is skipped when running on kubernetes.
+The plugin provides an init task running a privileged container capable of loading the AppArmor profile onto your machine.
+This is only compatible with a docker installation.
 
-The plugins offers the possibility to load the AppArmor profile using a DaemonSet,
-assuming the nodes are already running AppArmor. To do so you must set
-``CODEJAIL_ENABLE_K8S_DAEMONSET`` to ``True``.
+For Kubernetes environments, ensure each node has AppArmor installed and the profile loaded. Optionally, 
+set ``CODEJAIL_ENABLE_K8S_DAEMONSET`` to True to use a DaemonSet for loading the AppArmor profile, 
+assuming the nodes are already running AppArmor.
 
-If, at your own discretion, want to run the service without enforcing the AppArmor
-profile you can set ``CODEJAIL_ENFORCE_APPARMOR`` to ``False``.
+If you choose to run the service without enforcing the AppArmor profile, you can set ``CODEJAIL_ENFORCE_APPARMOR`` to ``False``.
 
 More info about this discussion can be found on `this issue`_.
 
 .. _this issue: https://github.com/eduNEXT/tutor-contrib-codejail/issues/24
 
-Functionality test
-------------------
+Testing Functionality
+---------------------
 
-How to know if codejail is working
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The easiest way to test whether codejail is working is to validate it in ``Studio`` with a course
-that has loncapa problems.
-
-This test was performed on the Maple version of Open edx, using the course ``course_codejail_example.tar.gz``
-found in the additional resources section.
+To verify if Codejail is working, use a course with loncapa problems in ``Studio`` and check for correct execution.
+You can import the provided `example course`_ .
 
 Once the course is imported, go to any section and select an exercise (`section example`_), the proper result is:
 
+.. _example course: https://github.com/eduNEXT/tutor-contrib-codejail/blob/main/docs/resources/course_codejail_example.tar.gz
 .. _section example: http://studio.local.overhang.io:8001/container/block-v1:edX+DemoX+Demo_Course+type@vertical+block@v-integral1
 
 .. image:: ./docs/resources/Codejailworking.png
@@ -124,12 +123,12 @@ Once the course is imported, go to any section and select an exercise (`section 
     :align: center
     :alt: Example when codejail is working
 
-In this case, the section's content will render correctly and will be working as specified in the instructions of the problem.
+In this case, the section's content will render correctly and work as specified in the instructions of the problem.
 
 Possible failure case
 ~~~~~~~~~~~~~~~~~~~~~
 
-In case you forget to run ``tutor local do init --limit codejail`` for apparmor profile, this error in
+In case you forget to run ``tutor local do init --limit codejail`` for AppArmor profile, this error in
 ``Studio`` will arise::
 
     Error formatting HTML for problem:
@@ -141,15 +140,8 @@ In case you forget to run ``tutor local do init --limit codejail`` for apparmor 
     :align: center
     :alt: Example when codejail is not working
 
-This indicates that the codejail service is not turned on or is not working properly. Be sure to follow the
-steps in the usage section so this doesn't happen.
-
-Additional Resources
---------------------
-
-Example course to test the Codejail service: `course_codejail_example.tar.gz`_
-
-.. _course_codejail_example.tar.gz: https://github.com/eduNEXT/tutor-contrib-codejail/blob/main/docs/resources/course_codejail_example.tar.gz
+This indicates that the Codejail service is either not turned on or not working properly. Please ensure to follow 
+the steps outlined in the usage section to prevent this issue.
 
 How to Contribute
 -----------------
@@ -163,4 +155,4 @@ quality, which will make your contribution more likely to be accepted.
 License
 -------
 
-This software is licensed under the terms of the AGPLv3.
+This software is licensed under the terms of the AGPLv3. See the LICENSE file for details.
