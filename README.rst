@@ -17,7 +17,11 @@ To install the latest version run:
 
     pip install git+https://github.com/edunext/tutor-contrib-codejail
 
-You can install a specific version by adding the tag at the end, e.g.: ``#v17.0.0``.
+You can install a specific version by adding the tag, branch, or commit:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/edunext/tutor-contrib-codejail@v17.0.0
 
 Usage
 -----
