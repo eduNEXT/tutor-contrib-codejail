@@ -31,7 +31,7 @@ Enable the plugin with:
 
     tutor plugins enable codejail
 
-Install the "docker-edx-sandbox" AppArmor profile on your host:
+Run the initialization jobs to install the required AppArmor profile on your host:
 
 .. code-block:: bash
 
@@ -44,13 +44,15 @@ Finally, the platform can be run as usual:
 
     tutor local launch
 
+**Please remember:** If the host is rebooted, the AppArmor profile needs to be reloaded.
+
 Configuration
 -------------
 
 To customize the configuration, update the following settings in Tutor:
 
 - ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
-- ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:{__version__} ``)
+- ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:{{__version__}}``)
 - ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
 - ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
 - ``CODEJAIL_SKIP_INIT`` (default: ``False``)
