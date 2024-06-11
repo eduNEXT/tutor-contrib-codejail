@@ -59,10 +59,10 @@ To customize the configuration, update the following settings in Tutor:
 - ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.8.6``)
 - ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (optional) A list of pip requirements to add to your sandbox.
     
-    .. code-block:: yaml
+.. code-block:: yaml
 
-        CODEJAIL_EXTRA_PIP_REQUIREMENTS:
-        - pybryt
+    CODEJAIL_EXTRA_PIP_REQUIREMENTS:
+    - pybryt
         
 **NOTE:** For some configurations to work, the codejail image must be rebuilt. Command to rebuild codejail: ``tutor images build codejail``.
 
