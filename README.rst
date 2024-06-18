@@ -63,8 +63,27 @@ To customize the configuration, update the following settings in Tutor:
 
     CODEJAIL_EXTRA_PIP_REQUIREMENTS:
     - pybryt
-        
-**NOTE:** For some configurations to work, the codejail image must be rebuilt. Command to rebuild codejail: ``tutor images build codejail``.
+    
+
+Custom Image 
+~~~~~~~~~~~~
+
+In most cases, you can work with the provided docker image for the release. However, you will need to re-build the docker image when:
+
+. Additional requirements are included in the sandbox via ``CODEJAIL_EXTRA_PIP_REQUIREMENTS``.
+- A different version of Python is set for the sandbox environment via ``CODEJAIL_SANDBOX_PYTHON_VERSION``.
+- The custom version of edx-platform that changes the contents of requirements/edx-sandbox.
+
+Create a new image running:
+
+.. code-block:: bash
+
+    # Add the tutor configuration with the custom value
+    tutor config save \
+    --set 'CODEJAIL_EXTRA_PIP_REQUIREMENTS=["pybryt"]'
+    
+    # Build the image
+    tutor images build codejail
 
 
 Compatibility
@@ -117,7 +136,7 @@ Testing Functionality
 ---------------------
 
 To verify if Codejail is working, use a course with loncapa problems in ``Studio`` and check for correct execution.
-You can import the provided `example course`_ .
+You can import the provided `example course`_.
 
 Once the course is imported, go to any section and select an exercise (`section example`_), the proper result is:
 
@@ -137,7 +156,7 @@ Possible failure case
 In case you forget to run ``tutor local do init --limit codejail`` for AppArmor profile, this error in
 ``Studio`` will arise::
 
-    Error formatting HTML for problem:
+    Error formatting HTML for the problem:
     cannot create LoncapaProblem block-v1:edX+DemoX+Demo_Course+type@problem+block@integral1: Error while
     executing script code: Codejail API Service is unavailable. Please try again in a few minutes.
 
