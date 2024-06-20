@@ -1,12 +1,12 @@
 Codejail plugin for `Tutor`_
 ============================
 
-Tutor plugin that configures and runs Codejail using a REST API service. Codejail allows for the 
+Tutor plugin that configures and runs a `Codejail Service`_ using a REST API. `Codejail`_ allows for the 
 secure execution of untrusted code within sandboxes, providing a safe environment for running potentially dangerous code.
 
 .. _Tutor: https://docs.tutor.overhang.io
-.. _service: https://github.com/eduNEXT/codejailservice
-.. _codejail: https://github.com/openedx/codejail
+.. _Codejail Service: https://github.com/eduNEXT/codejailservice
+.. _Codejail: https://github.com/openedx/codejail
 
 Installation
 ------------
