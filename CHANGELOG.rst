@@ -14,6 +14,21 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[18.0.0] - 2024-06-26
+~~~~~~~~~~~~~~~~~~~~~
+* feat: redwood support
+
+  Add two new variables to enable the use of custom versions/forks of
+  `edunext/codejailservice`.
+
+  BREAKING CHANGE: the default Python version of the sandbox environment
+  has been bumped to 3.11. This change alongside the upgrade of the SciPy
+  and NumPy dependencies may cause some instructor code to fail.
+
+[17.0.2] - 2024-05-24
+~~~~~~~~~~~~~~~~~~~~~
+* fix: use tutor config on codejail service and add patches to edit it DS-894 (#55)
+
 [17.0.1] - 2023-11-20
 ~~~~~~~~~~~~~~~~~~~~~
 

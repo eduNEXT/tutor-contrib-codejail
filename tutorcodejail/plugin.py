@@ -20,7 +20,7 @@ config = {
         "ENABLE_K8S_DAEMONSET": False,
         "ENFORCE_APPARMOR": True,
         "HOST": "codejailservice",
-        "SANDBOX_PYTHON_VERSION": "3.8.6",
+        "SANDBOX_PYTHON_VERSION": "3.11.9",
         "SKIP_INIT": False,
         "LIMIT_CPU": "1",
         "LIMIT_MEMORY": "1Gi",
@@ -30,6 +30,8 @@ config = {
         "MIN_REPLICAS": 1,
         "MAX_REPLICAS": 4,
         "AVG_CPU": 65,
+        "SERVICE_VERSION": "release/redwood.1",
+        "SERVICE_REPOSITORY": "https://github.com/edunext/codejailservice.git",
     },
     "overrides": {},
 }

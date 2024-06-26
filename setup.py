@@ -44,7 +44,7 @@ setup(
     packages=find_packages(exclude=["tests*"]),
     include_package_data=True,
     python_requires=">=3.8",
-    install_requires=["tutor>=17.0.2, <18"],
+    install_requires=["tutor>=18.0.0, <19"],
     entry_points={"tutor.plugin.v1": ["codejail = tutorcodejail.plugin"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -55,5 +55,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
 )

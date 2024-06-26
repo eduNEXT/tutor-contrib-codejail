@@ -1,7 +1,7 @@
 Codejail plugin for `Tutor`_
 ============================
 
-Tutor plugin that configures and runs a `Codejail Service`_ using a REST API. `Codejail`_ allows for the 
+Tutor plugin that configures and runs a `Codejail Service`_ using a REST API. `Codejail`_ allows for the
 secure execution of untrusted code within sandboxes, providing a safe environment for running potentially dangerous code.
 
 .. _Tutor: https://docs.tutor.overhang.io
@@ -21,7 +21,7 @@ You can install a specific version by adding the tag, branch, or commit:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/edunext/tutor-contrib-codejail@v17.0.0
+    pip install git+https://github.com/edunext/tutor-contrib-codejail@v18.0.0
 
 Usage
 -----
@@ -58,14 +58,16 @@ To customize the configuration, update the following settings in Tutor:
 - ``CODEJAIL_SKIP_INIT`` (default: ``False``)
 - ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.8.6``)
 - ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (optional) A list of pip requirements to add to your sandbox.
-    
+- ``CODEJAIL_SERVICE_VERSION`` (default: ``release/redwood.1``),
+- ``CODEJAIL_SERVICE_REPOSITORY`` (default ``https://github.com/edunext/codejailservice.git```)
+
 .. code-block:: yaml
 
     CODEJAIL_EXTRA_PIP_REQUIREMENTS:
     - pybryt
-    
 
-Custom Image 
+
+Custom Image
 ~~~~~~~~~~~~
 
 In most cases, you can work with the provided docker image for the release. However, you will need to re-build the docker image when:
@@ -81,7 +83,7 @@ Create a new image running:
     # Add the tutor configuration with the custom value
     tutor config save \
     --set 'CODEJAIL_EXTRA_PIP_REQUIREMENTS=["pybryt"]'
-    
+
     # Build the image
     tutor images build codejail
 
@@ -104,6 +106,8 @@ Compatibility
 +------------------+---------------+
 | Quince           | >= 17.x       |
 +------------------+---------------+
+| Redwood          | >= 18.x       |
++------------------+---------------+
 
 **NOTE**: For the Open edX version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
 not included in ``open-release/lilac.master``. To use the service with the changes, please review `this PR`_.
@@ -122,8 +126,8 @@ in the host machine and the `provided profile`_ must be loaded.
 The plugin provides an init task running a privileged container capable of loading the AppArmor profile onto your machine.
 This is only compatible with a docker installation.
 
-For Kubernetes environments, ensure each node has AppArmor installed and the profile loaded. Optionally, 
-set ``CODEJAIL_ENABLE_K8S_DAEMONSET`` to True to use a DaemonSet for loading the AppArmor profile, 
+For Kubernetes environments, ensure each node has AppArmor installed and the profile loaded. Optionally,
+set ``CODEJAIL_ENABLE_K8S_DAEMONSET`` to True to use a DaemonSet for loading the AppArmor profile,
 assuming the nodes are already running AppArmor.
 
 If you choose to run the service without enforcing the AppArmor profile, you can set ``CODEJAIL_ENFORCE_APPARMOR`` to ``False``.
@@ -165,7 +169,7 @@ In case you forget to run ``tutor local do init --limit codejail`` for AppArmor 
     :align: center
     :alt: Example when codejail is not working
 
-This indicates that the Codejail service is either not turned on or not working properly. Please ensure to follow 
+This indicates that the Codejail service is either not turned on or not working properly. Please ensure to follow
 the steps outlined in the usage section to prevent this issue.
 
 How to Contribute
