@@ -1,4 +1,4 @@
-name: PR-Issue assignment
+name: Add issues and PRs to the Apollo project
 
 on:
   issues:
@@ -7,8 +7,8 @@ on:
     types: [opened]
 
 jobs:
-  auto-assign:
-    name: Auto Assign
+  add-to-project:
+    name: Add to project
     runs-on: ubuntu-latest
     steps:
       - name: Get Token
@@ -17,8 +17,8 @@ jobs:
         with:
           application_id: ${{ vars.APOLLO_APP_ID }}
           application_private_key: ${{ secrets.APOLLO_APP_SECRET }}
-      - name: Auto-assign PR-Issue
-        uses: pozil/auto-assign-issue@v2
+      - name: Add to Apollo Project
+        uses: actions/add-to-project@v1.0.2
         with:
-          repo-token: ${{ steps.get_workflow_token.outputs.token }}
-          teams: dedalo
+          project-url: https://github.com/orgs/eduNEXT/projects/1
+          github-token: ${{ steps.get_workflow_token.outputs.token }}
