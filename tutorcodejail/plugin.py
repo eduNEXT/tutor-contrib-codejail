@@ -30,7 +30,7 @@ config = {
         "MIN_REPLICAS": 1,
         "MAX_REPLICAS": 4,
         "AVG_CPU": 65,
-        "SERVICE_VERSION": "release/redwood.1",
+        "SERVICE_VERSION": "sumac",
         "SERVICE_REPOSITORY": "https://github.com/edunext/codejailservice.git",
     },
     "overrides": {},
