@@ -3,11 +3,14 @@ from __future__ import annotations
 
 import os
 from glob import glob
+from pathlib import Path
 
 import importlib_resources
 from tutor import hooks
 
 from .__about__ import __version__
+
+ABI_PATH = "/etc/apparmor.d/abi"
 
 config = {
     "unique": {
@@ -15,7 +18,7 @@ config = {
     },
     "defaults": {
         "VERSION": __version__,
-        "APPARMOR_DOCKER_IMAGE": "docker.io/ednxops/codejail_apparmor_loader:latest",
+        "APPARMOR_DOCKER_IMAGE": "docker.io/ednxops/codejail_apparmor_loader:apparmor-3",
         "DOCKER_IMAGE": f"docker.io/ednxops/codejailservice:{__version__}",
         "ENABLE_K8S_DAEMONSET": False,
         "ENFORCE_APPARMOR": True,
@@ -36,6 +39,34 @@ config = {
     "overrides": {},
 }
 
+
+def get_apparmor_abi():
+    """
+    Return the default abi 3.0 rule if available in the system.
+
+    AppArmor uses the Policy feature ABI to establish which rules it can
+    enforce based on the kernel capabilities. AppArmor profiles can include an
+    ABI rule to indicate the ABI they were developed under. If no rule is used
+    AppArmor will fallback to whichever rule is pinned in the
+    `/etc/apparmor/parser.conf` file.
+
+    We try to use the 3.0 abi whenever it's available at `/etc/apparmor.d/abi/`
+    to guarantee that network rules are correctly enforced on newer versions of
+    the kernel. If the ABI is not present we don't set the abi rule and instead
+    rely on the default fallback.
+
+    See: https://github.com/netblue30/firejail/issues/3659#issuecomment-711074899
+    """
+    if Path(f"{ABI_PATH}/3.0").exists():
+        return "abi <abi/3.0>,"
+    return ""
+
+
+hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
+    [
+        ("get_apparmor_abi", get_apparmor_abi()),
+    ]
+)
 
 # To add a custom initialization task, create a bash script template under:
 # tutorcodejail/templates/codejail/tasks/
