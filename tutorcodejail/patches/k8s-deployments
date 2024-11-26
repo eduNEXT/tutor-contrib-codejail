@@ -15,7 +15,7 @@ spec:
         app.kubernetes.io/name: codejailservice
       annotations:
         {% if CODEJAIL_ENFORCE_APPARMOR %}
-        container.apparmor.security.beta.kubernetes.io/codejailservice: "localhost/docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}"
+        container.apparmor.security.beta.kubernetes.io/codejailservice: "localhost/docker-edx-sandbox"
         {% endif %}
     spec:
       containers:

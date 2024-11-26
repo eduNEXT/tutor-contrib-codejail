@@ -1,6 +1,8 @@
 #include <tunables/global>
 
-profile docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }} flags=(attach_disconnected,mediate_deleted) {
+{{ get_apparmor_abi }}
+
+profile docker-edx-sandbox flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
 
   network,
@@ -9,7 +11,7 @@ profile docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }} flags=(attach_d
   umount,
   signal (receive) peer=unconfined,
   signal (receive) peer=cri-containerd.apparmor.d,
-  signal (send,receive) peer=docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }},
+  signal (send,receive) peer=docker-edx-sandbox,
 
   deny @{PROC}/* w,   # deny write for all files directly in /proc (not in a subdir)
   # deny write to files not in /proc/<number>/** or /proc/sys/**
@@ -30,7 +32,7 @@ profile docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }} flags=(attach_d
   deny /sys/firmware/** rwklx,
   deny /sys/kernel/security/** rwklx,
 
-  ptrace (trace,read) peer=docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }},
+  ptrace (trace,read) peer=docker-edx-sandbox,
 
   /sandbox/venv/bin/python Cx -> child,
   profile child flags=(attach_disconnected,mediate_deleted){
@@ -39,20 +41,18 @@ profile docker-edx-sandbox-{{ CODEJAIL_SANDBOX_PYTHON_VERSION }} flags=(attach_d
     #
     # Python abstractions adapted from https://gitlab.com/apparmor/apparmor/-/raw/master/profiles/apparmor.d/abstractions/python
     #
-    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/**.{pyc,so} mr,
-    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/**.{egg,py,pth} r,
-    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/site-packages/ r,
-    /opt/pyenv/versions/3.[0-9].*/lib/python3.[0-9]/lib-dynload/*.so mr,
-
-    /opt/pyenv/versions/3.[0-9].*/include/python3.[0-9]*/pyconfig.h r,
-
+    /opt/pyenv/versions/{3.[0-9],3.[1-9][0-9]}.*/lib/python{3.[0-9],3.[1-9][0-9]}/**.{pyc,so} mr,
+    /opt/pyenv/versions/{3.[0-9],3.[1-9][0-9]}.*/lib/python{3.[0-9],3.[1-9][0-9]}/**.{egg,py,pth} r,
+    /opt/pyenv/versions/{3.[0-9],3.[1-9][0-9]}.*/lib/python{3.[0-9],3.[1-9][0-9]}/site-packages/ r,
+    /opt/pyenv/versions/{3.[0-9],3.[1-9][0-9]}.*/lib/python{3.[0-9],3.[1-9][0-9]}/lib-dynload/*.so mr,
+    /opt/pyenv/versions/{3.[0-9],3.[1-9][0-9]}.*/include/python{3.[0-9],3.[1-9][0-9]}*/pyconfig.h r,
 
     #
     # Whitelist particiclar shared objects from the system
     # python installation
     #
     /sandbox/venv/** mr,
-    /opt/pyenv/versions/{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}_sandbox/** mr,
+    /opt/pyenv/versions/{3.[0-9],3.[1-9][0-9]}.*_sandbox/** mr,
     /tmp/codejail-*/ rix,
     /tmp/codejail-*/** wrix,
     /tmp/* wrix,
