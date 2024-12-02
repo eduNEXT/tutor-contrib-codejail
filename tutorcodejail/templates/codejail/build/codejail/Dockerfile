@@ -10,32 +10,58 @@ ENV LC_ALL=en_US.UTF-8
 FROM minimal AS python
 # https://github.com/pyenv/pyenv/wiki/Common-build-problems#prerequisites
 RUN apt update && \
-    apt install -y libssl-dev zlib1g-dev libbz2-dev \
-    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git subversion
-ENV PYENV_ROOT=/opt/pyenv
-RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v2.4.0 --depth 1
+    apt install -y \
+    curl \
+    git \
+    libbz2-dev \
+    libffi-dev \
+    liblzma-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    llvm \
+    python3-openssl \
+    subversion \
+    tk-dev \
+    wget \
+    xz-utils \
+    zlib1g-dev
 
-ARG CODEJAILSERVICE_PYTHON_VERSION=3.11.9
-RUN $PYENV_ROOT/bin/pyenv install $CODEJAILSERVICE_PYTHON_VERSION
+ENV PYENV_ROOT=/opt/pyenv
+RUN git clone \
+    --branch v2.4.0 \
+    --depth 1 https://github.com/pyenv/pyenv "$PYENV_ROOT"
 
 ARG SANDBOX_PYTHON_VERSION="{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}"
-RUN git clone https://github.com/esinker/pyenv-version-alias $PYENV_ROOT/plugins/pyenv-alias
+RUN git clone \
+    https://github.com/esinker/pyenv-version-alias \
+    "$PYENV_ROOT/plugins/pyenv-alias"
+
+ARG CODEJAILSERVICE_PYTHON_VERSION=3.11.9
+RUN "$PYENV_ROOT/bin/pyenv" install "$CODEJAILSERVICE_PYTHON_VERSION"
+
 RUN VERSION_ALIAS="{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}_sandbox" \
-    $PYENV_ROOT/bin/pyenv install -f $SANDBOX_PYTHON_VERSION
+    "$PYENV_ROOT/bin/pyenv" install -f "$SANDBOX_PYTHON_VERSION"
 
 RUN "$PYENV_ROOT/versions/$CODEJAILSERVICE_PYTHON_VERSION/bin/python" -m venv /openedx/venv
 RUN "$PYENV_ROOT/versions/"$SANDBOX_PYTHON_VERSION"_sandbox/bin/python" -m venv --copies /sandbox/venv
 
 ###### Codejail service code
 FROM minimal AS code
-RUN git clone {{ CODEJAIL_SERVICE_REPOSITORY }} --branch {{ CODEJAIL_SERVICE_VERSION }} --depth 1 /openedx/codejailservice
+RUN git clone \
+    --branch '{{ CODEJAIL_SERVICE_VERSION }}' \
+    --depth 1 \
+    "{{ CODEJAIL_SERVICE_REPOSITORY }}"\
+    /openedx/codejailservice
+
 WORKDIR /openedx/codejailservice
 
 ###### Install python requirements in virtualenv
 FROM python AS codejailservice-python-requirements
 
-ENV PATH=/openedx/venv/bin:${PATH}
+ENV PATH="/openedx/venv/bin:${PATH}"
 ENV VIRTUAL_ENV=/openedx/venv/
 
 COPY --from=code /openedx/codejailservice /openedx/codejailservice
@@ -46,10 +72,10 @@ RUN pip3 install uwsgi==2.0.21
 ###### Install python requirements in virtualenv
 FROM python AS sandbox-python-requirements
 
-ARG EDX_PLATFORM_REPOSITORY={{ EDX_PLATFORM_REPOSITORY }}
-ARG EDX_PLATFORM_VERSION={{ EDX_PLATFORM_VERSION }}
+ARG EDX_PLATFORM_REPOSITORY="{{ EDX_PLATFORM_REPOSITORY }}"
+ARG EDX_PLATFORM_VERSION="{{ EDX_PLATFORM_VERSION }}"
 
-ENV PATH=/sandbox/venv/bin:${PATH}
+ENV PATH="/sandbox/venv/bin:${PATH}"
 ENV VIRTUAL_ENV=/sandbox/venv/
 
 WORKDIR /var/tmp
