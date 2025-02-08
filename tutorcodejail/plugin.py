@@ -68,6 +68,20 @@ hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
     ]
 )
 
+@hooks.Filters.COMPOSE_MOUNTS.add()
+def _mount_codejailservice(
+    volumes: list[tuple[str, str]], path_basename: str
+) -> list[tuple[str, str]]:
+    """
+    Bindmount the codejailservice code to the container using
+    `tutor mount add /path/to/codejailservice`.
+    """
+    if path_basename == "codejailservice":
+        path = "/openedx/codejailservice"
+        volumes.append(("codejailservice", path))
+    return volumes
+
+
 # To add a custom initialization task, create a bash script template under:
 # tutorcodejail/templates/codejail/tasks/
 # and then add it to the MY_INIT_TASKS list. Each task is in the format:

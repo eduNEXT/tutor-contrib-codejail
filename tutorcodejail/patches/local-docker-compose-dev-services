@@ -1,8 +1,12 @@
 codejailservice:
-  command: flask run --host 0.0.0.0 --port 8550
+  command: flask run --debug --host 0.0.0.0 --port 8550
   environment:
     FLASK_ENV: development
     FLASK_APP_SETTINGS: codejailservice.tutor.DevelopmentConfig
   ports:
     - "8550:8550"
   restart: unless-stopped
+  volumes:
+    {%- for mount in iter_mounts(MOUNTS, "codejailservice") %}
+    - {{ mount }}
+    {%- endfor %}
