@@ -33,7 +33,7 @@ config = {
         "MIN_REPLICAS": 1,
         "MAX_REPLICAS": 4,
         "AVG_CPU": 65,
-        "SERVICE_VERSION": "release/sumac.1",
+        "SERVICE_VERSION": "release/sumac.2",
         "SERVICE_REPOSITORY": "https://github.com/edunext/codejailservice.git",
     },
     "overrides": {},
