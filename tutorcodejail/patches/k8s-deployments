@@ -23,6 +23,9 @@ spec:
           image: {{ CODEJAIL_DOCKER_IMAGE }}
           ports:
             - containerPort: 8550
+          env:
+            - name: FLASK_APP_SETTINGS
+              value: codejailservice.tutor.ProductionConfig
           volumeMounts:
             - mountPath: /openedx/codejailservice/codejailservice/tutor.py
               name: settings-codejail
