@@ -55,8 +55,8 @@ ENV VIRTUAL_ENV=/sandbox/venv/
 WORKDIR /var/tmp
 RUN mkdir -p common/lib/
 
-ADD $EDX_PLATFORM_REPOSITORY#$EDX_PLATFORM_VERSION:requirements/edx-sandbox/releases .
-RUN pip3 install -r sumac.txt
+ADD $EDX_PLATFORM_REPOSITORY#$EDX_PLATFORM_VERSION:requirements/edx-sandbox/ .
+RUN pip3 install -r releases/teak.txt
 
 # Allows you to add extra pip requirements to your codejail sandbox.
 {% if CODEJAIL_EXTRA_PIP_REQUIREMENTS is defined %}
