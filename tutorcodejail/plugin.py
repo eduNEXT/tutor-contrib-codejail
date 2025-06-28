@@ -68,26 +68,6 @@ hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
     ]
 )
 
-# To add a custom initialization task, create a bash script template under:
-# tutorcodejail/templates/codejail/tasks/
-# and then add it to the MY_INIT_TASKS list. Each task is in the format:
-# ("<service>", ("<path>", "<to>", "<script>", "<template>"))
-MY_INIT_TASKS: list[tuple[str, tuple[str, ...], int]] = [
-    ("codejail-apparmor", ("codejail", "tasks", "codejail-apparmor", "init"), hooks.priorities.HIGH),
-]
-
-
-# For each task added to MY_INIT_TASKS, we load the task template
-# and add it to the CLI_DO_INIT_TASKS filter, which tells Tutor to
-# run it as part of the `init` job.
-for service, template_path, priority in MY_INIT_TASKS:
-    full_path: str = str(
-        importlib_resources.files("tutorcodejail") / os.path.join("templates", *template_path)
-    )
-    with open(full_path, encoding="utf-8") as init_task_file:
-        init_task: str = init_task_file.read()
-    hooks.Filters.CLI_DO_INIT_TASKS.add_item((service, init_task), priority=priority)
-
 
 hooks.Filters.IMAGES_BUILD.add_item((
     "codejail",
