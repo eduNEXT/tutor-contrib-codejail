@@ -11,17 +11,21 @@ secure execution of untrusted code within sandboxes, providing a safe environmen
 Installation
 ------------
 
-To install the latest version run:
+To install the latest version, run:
 
 .. code-block:: bash
 
+    pip install tutor-contrib-codejail
+    # or install from the source
     pip install git+https://github.com/edunext/tutor-contrib-codejail
 
 You can install a specific version by adding the tag, branch, or commit:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/edunext/tutor-contrib-codejail@v18.0.0
+    pip install tutor-contrib-codejail==v20.0.0
+    # or install from the source
+    pip install git+https://github.com/edunext/tutor-contrib-codejail@v20.0.0
 
 Usage
 -----
@@ -56,9 +60,9 @@ To customize the configuration, update the following settings in Tutor:
 - ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
 - ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
 - ``CODEJAIL_SKIP_INIT`` (default: ``False``)
-- ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.8.6``)
+- ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.11.9``)
 - ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (optional) A list of pip requirements to add to your sandbox.
-- ``CODEJAIL_SERVICE_VERSION`` (default: ``release/redwood.1``),
+- ``CODEJAIL_SERVICE_VERSION`` (default: ``release/teak.1``),
 - ``CODEJAIL_SERVICE_REPOSITORY`` (default ``https://github.com/edunext/codejailservice.git```)
 
 .. code-block:: yaml
@@ -70,7 +74,7 @@ To customize the configuration, update the following settings in Tutor:
 Custom Image
 ~~~~~~~~~~~~
 
-In most cases, you can work with the provided docker image for the release. However, you will need to re-build the docker image when:
+In most cases, you can work with the provided Docker image for the release. However, you will need to rebuild the Docker image when:
 
 . Additional requirements are included in the sandbox via ``CODEJAIL_EXTRA_PIP_REQUIREMENTS``.
 - A different version of Python is set for the sandbox environment via ``CODEJAIL_SANDBOX_PYTHON_VERSION``.
@@ -108,6 +112,10 @@ Compatibility
 +------------------+---------------+
 | Redwood          | >= 18.x       |
 +------------------+---------------+
+| Sumac            | >= 19.x       |
++------------------+---------------+
+| Teak             | >= 20.x       |
++------------------+---------------+
 
 **NOTE**: For the Open edX version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are
 not included in ``open-release/lilac.master``. To use the service with the changes, please review `this PR`_.
@@ -119,12 +127,12 @@ Kubernetes Support
 
 The CodeJail service provides a sandbox to run arbitrary code. Security enforcement
 in the sandbox is done through *AppArmor*, this means that AppArmor must be installed
-in the host machine and the `provided profile`_ must be loaded.
+in the host machine, and the `provided profile`_ must be loaded.
 
 .. _provided profile: tutorcodejail/templates/codejail/apps/profiles/docker-edx-sandbox
 
 The plugin provides an init task running a privileged container capable of loading the AppArmor profile onto your machine.
-This is only compatible with a docker installation.
+This is only compatible with a Docker installation.
 
 For Kubernetes environments, ensure each node has AppArmor installed and the profile loaded. Optionally,
 set ``CODEJAIL_ENABLE_K8S_DAEMONSET`` to True to use a DaemonSet for loading the AppArmor profile,
