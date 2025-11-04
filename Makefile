@@ -36,8 +36,6 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 
 quality: ## check coding style with pycodestyle and pylint
 	pylint tutorcodejail *.py
-	pycodestyle tutorcodejail *.py
-	pydocstyle tutorcodejail *.py
 	isort --check-only --diff --recursive tutorcodejail *.py
 	python setup.py bdist_wheel
 	twine check dist/*

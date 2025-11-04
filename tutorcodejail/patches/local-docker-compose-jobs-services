@@ -1,0 +1,9 @@
+codejail-apparmor-job:
+  image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }}
+  privileged: true
+  environment:
+    SKIP_INIT: "{{ CODEJAIL_SKIP_INIT }}"
+  volumes:
+    - ../plugins/codejail/apps/profiles/:/profiles/:ro
+    - /sys:/sys
+    - /etc/apparmor.d:/etc/apparmor.d

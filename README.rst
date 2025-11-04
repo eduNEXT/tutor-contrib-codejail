@@ -1,11 +1,18 @@
 Codejail plugin for `Tutor`_
 ============================
 
-Tutor plugin that configures and runs a `Codejail Service`_ using a REST API. `Codejail`_ allows for the
-secure execution of untrusted code within sandboxes, providing a safe environment for running potentially dangerous code.
+Tutor plugin that configures and runs a `Codejail Service`_ using a REST API.
+`Codejail`_ allows for the secure execution of untrusted code within sandboxes,
+providing a safe environment for running potentially dangerous code.
+
+Starting from the Ulmo release, the codejail plugin is transitioning to an
+alternative implementation of the safe-exec API ( `Codejail Service V2`_).
+You can opt-in to use this new implementation on Ulmo before it finally becomes
+the default on the Verawood release.
 
 .. _Tutor: https://docs.tutor.overhang.io
 .. _Codejail Service: https://github.com/eduNEXT/codejailservice
+.. _Codejail Service V2: https://github.com/openedx/codejail-service
 .. _Codejail: https://github.com/openedx/codejail
 
 Installation
@@ -23,9 +30,9 @@ You can install a specific version by adding the tag, branch, or commit:
 
 .. code-block:: bash
 
-    pip install tutor-contrib-codejail==v20.0.0
+    pip install tutor-contrib-codejail~=21.0
     # or install from the source
-    pip install git+https://github.com/edunext/tutor-contrib-codejail@v20.0.0
+    pip install git+https://github.com/edunext/tutor-contrib-codejail@v21.0.0
 
 Usage
 -----
@@ -55,14 +62,26 @@ Configuration
 To customize the configuration, update the following settings in Tutor:
 
 - ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
+- ``CODEJAIL_DOCKER_IMAGE_V2`` : (default: ``{{ CODEJAIL_DOCKER_IMAGE }}-v2``)
 - ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:{{__version__}}``)
 - ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
 - ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
 - ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (default: ``[]``)
 - ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.11.9``)
-- ``CODEJAIL_SERVICE_REPOSITORY`` (default ``https://github.com/edunext/codejailservice.git```)
-- ``CODEJAIL_SERVICE_VERSION`` (default: ``release/teak.1``),
+- ``CODEJAIL_SERVICE_REPOSITORY`` (default: ``https://github.com/edunext/codejailservice.git```)
+- ``CODEJAIL_SERVICE_VERSION`` (default: ``{{ OPENEDX_COMMON_VERSION }}``),
 - ``CODEJAIL_SKIP_INIT`` (default: ``False``)
+- ``SERVICE_V2_REPOSITORY``: (default: ``https://github.com/openedx/codejail-service.git``)
+- ``SERVICE_V2_VERSION``: (default: ``{{ OPENEDX_COMMON_VERSION }}``)
+- ``USE_SERVICE_V2``: (default: ``False``)
+
+The ``CODEJAIL_V2_*`` settings are meant to be used only during the Ulmo
+release and will be phased-out during the Verawood release.
+
+To opt-in to the new implementation of the code-exec API set ``USE_SERVICE_V2``
+to ``True`` and re-deploy your environment. If you are using a a custom image
+for the codejail service you will need to rebuild it with ``USE_SERVICE_V2``
+set to ``True``.
 
 Custom Image
 ~~~~~~~~~~~~
@@ -108,6 +127,8 @@ Compatibility
 | Sumac            | >= 19.x       |
 +------------------+---------------+
 | Teak             | >= 20.x       |
++------------------+---------------+
+| Ulmo             | >= 21.x       |
 +------------------+---------------+
 
 **NOTE**: For the Open edX version of the Lilac release, the changes required for the Codejail service to interact with ``edx-platform`` are

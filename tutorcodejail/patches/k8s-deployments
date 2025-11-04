@@ -1,4 +1,5 @@
 ---
+{% if CODEJAIL_USE_SERVICE_V2 %}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,11 +14,49 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: codejailservice
-      annotations:
-        {% if CODEJAIL_ENFORCE_APPARMOR %}
-        container.apparmor.security.beta.kubernetes.io/codejailservice: "localhost/docker-edx-sandbox"
-        {% endif %}
     spec:
+      securityContext:
+        appArmorProfile: 
+          type: Localhost
+          localhostProfile: openedx_codejail_service
+      containers:
+        - name: codejailservice
+          image: {{ CODEJAIL_DOCKER_IMAGE_V2 }}
+          ports:
+            - containerPort: 8550
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: codejail_service.settings.tutor
+          volumeMounts:
+            - mountPath: /app/codejail_service/settings/tutor.py
+              name: settings-codejail
+              subPath: tutor.py
+      volumes:
+        - name: settings-codejail
+          configMap:
+            name: settings-codejail
+{% else %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codejailservice
+  labels:
+    app.kubernetes.io/name: codejailservice
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: codejailservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: codejailservice
+    spec:
+      {% if CODEJAIL_ENFORCE_APPARMOR %}
+      securityContext:
+        appArmorProfile: 
+          type: Localhost
+          localhostProfile: docker-edx-sandbox
+      {% endif %}
       containers:
         - name: codejailservice
           image: {{ CODEJAIL_DOCKER_IMAGE }}
@@ -34,6 +73,7 @@ spec:
         - name: settings-codejail
           configMap:
             name: settings-codejail
+{% endif %}
 {% if CODEJAIL_ENABLE_K8S_DAEMONSET %}
 ---
 apiVersion: apps/v1

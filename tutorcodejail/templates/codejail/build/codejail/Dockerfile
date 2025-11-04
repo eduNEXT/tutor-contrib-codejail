@@ -14,9 +14,9 @@ RUN apt update && \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git subversion
 ENV PYENV_ROOT=/opt/pyenv
-RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v2.4.0 --depth 1
+RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v2.6.12 --depth 1
 
-ARG CODEJAILSERVICE_PYTHON_VERSION=3.11.9
+ARG CODEJAILSERVICE_PYTHON_VERSION=3.11.14
 RUN $PYENV_ROOT/bin/pyenv install $CODEJAILSERVICE_PYTHON_VERSION
 
 ARG SANDBOX_PYTHON_VERSION="{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}"
@@ -56,7 +56,7 @@ WORKDIR /var/tmp
 RUN mkdir -p common/lib/
 
 ADD $EDX_PLATFORM_REPOSITORY#$EDX_PLATFORM_VERSION:requirements/edx-sandbox/ .
-RUN pip3 install -r releases/teak.txt
+RUN pip3 install -r base.txt
 
 {% if CODEJAIL_EXTRA_PIP_REQUIREMENTS %}
 # Allows you to add extra pip requirements to your codejail sandbox.
@@ -85,15 +85,16 @@ RUN groupadd -r sandbox && useradd -m -r -g sandbox sandbox && chown -R sandbox:
 
 ENV PATH=/openedx/venv/bin:${PATH}
 ENV VIRTUAL_ENV=/openedx/venv/
+ENV UWSGI_WORKERS=2
 WORKDIR /openedx/codejailservice
 
 EXPOSE 8550
-CMD uwsgi \
-    --http 0.0.0.0:8550 \
-    --thunder-lock \
-    --single-interpreter \
-    --enable-threads \
-    --processes=${UWSGI_WORKERS:-2} \
-    --buffer-size=8192 \
-    --max-requests=1000 \
-    --wsgi-file /openedx/codejailservice/wsgi.py
+
+CMD [ "uwsgi", \
+    "--http=0.0.0.0:8550", \
+    "--thunder-lock", \
+    "--single-interpreter", \
+    "--enable-threads", \
+    "--buffer-size=8192", \
+    "--max-requests=1000", \
+    "--wsgi-file=/openedx/codejailservice/wsgi.py" ]
