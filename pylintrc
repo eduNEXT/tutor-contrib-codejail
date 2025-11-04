@@ -1,5 +1,5 @@
 [MASTER]
-ignore = migrations
+ignore = migrations,patches,templates
 persistent = yes
 
 [MESSAGES CONTROL]

@@ -1,4 +1,19 @@
 #############Codejail service
+{% if CODEJAIL_USE_SERVICE_V2 %}
+codejailservice:
+  image: {{ CODEJAIL_DOCKER_IMAGE_V2 }}
+  ports:
+    - 8550:8550
+  environment:
+    DJANGO_SETTINGS_MODULE: codejail_service.settings.tutor
+  security_opt:
+    - apparmor:openedx_codejail_service
+  volumes:
+    - ../plugins/codejail/apps/codejail-service-v2/tutor.py:/app/codejail_service/settings/tutor.py:ro
+  restart: unless-stopped
+  depends_on:
+    - codejail-apparmor-loader
+{% else %}
 codejailservice:
   image: {{ CODEJAIL_DOCKER_IMAGE }}
   environment:
@@ -8,11 +23,11 @@ codejailservice:
     - apparmor:docker-edx-sandbox
   {% endif %}
   volumes:
-    - ../plugins/codejail/apps/config/tutor.py:/openedx/codejailservice/codejailservice/tutor.py:ro
-    - ../../data/codejail:/openedx/data
+    - ../plugins/codejail/apps/codejail/tutor.py:/openedx/codejailservice/codejailservice/tutor.py:ro
   restart: unless-stopped
   depends_on:
     - codejail-apparmor-loader
+{% endif %}
 
 codejail-apparmor-loader:
   image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }}
@@ -23,6 +38,6 @@ codejail-apparmor-loader:
     - -v=2
     - /profiles
   volumes:
-    - ../plugins/codejail/apps/profiles/docker-edx-sandbox:/profiles/docker-edx-sandbox:ro
+    - ../plugins/codejail/apps/profiles/:/profiles/:ro
     - /sys:/sys
     - /etc/apparmor.d:/etc/apparmor.d
