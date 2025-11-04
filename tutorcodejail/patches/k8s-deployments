@@ -13,11 +13,13 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: codejailservice
-      annotations:
-        {% if CODEJAIL_ENFORCE_APPARMOR %}
-        container.apparmor.security.beta.kubernetes.io/codejailservice: "localhost/docker-edx-sandbox"
-        {% endif %}
     spec:
+      {% if CODEJAIL_ENFORCE_APPARMOR %}
+      securityContext:
+        appArmorProfile: 
+          type: Localhost
+          localhostProfile: docker-edx-sandbox
+      {% endif %}
       containers:
         - name: codejailservice
           image: {{ CODEJAIL_DOCKER_IMAGE }}

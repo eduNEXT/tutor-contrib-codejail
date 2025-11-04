@@ -43,8 +43,8 @@ setup(
     long_description=load_readme(),
     packages=find_packages(exclude=["tests*"]),
     include_package_data=True,
-    install_requires=["tutor>=20.0.0,<21"],
     python_requires=">=3.10",
+    install_requires=["tutor~=21.0"],
     entry_points={"tutor.plugin.v1": ["codejail = tutorcodejail.plugin"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
