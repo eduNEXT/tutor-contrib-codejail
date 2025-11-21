@@ -7,7 +7,7 @@ FROM scratch AS sandbox-dependencies
 # Where to get the Python dependencies lockfile for installing
 # packages into the sandbox environment. Defaults to the codejail
 # dependencies in edx-platform.
-ARG SANDBOX_DEPS_REPO=openedx/edx-platform
+ARG SANDBOX_DEPS_REPO={{ EDX_PLATFORM_REPOSITORY }}
 ARG SANDBOX_DEPS_VERSION={{ CODEJAIL_SERVICE_V2_VERSION }}
 # Path to the lockfile in the deps repo, as dir + filename.
 #
@@ -15,7 +15,7 @@ ARG SANDBOX_DEPS_VERSION={{ CODEJAIL_SERVICE_V2_VERSION }}
 # to be coordinated with SANDBOX_PY_VER as each release has a
 # different Python support window.
 ARG SANDBOX_DEPS_SRC_DIR=requirements/edx-sandbox
-ADD https://github.com/${SANDBOX_DEPS_REPO}.git#${SANDBOX_DEPS_VERSION}:${SANDBOX_DEPS_SRC_DIR} /
+ADD ${SANDBOX_DEPS_REPO}#${SANDBOX_DEPS_VERSION}:${SANDBOX_DEPS_SRC_DIR} /
 
 FROM docker.io/ubuntu:24.04 AS app
 ARG APP_PY_VER=3.12

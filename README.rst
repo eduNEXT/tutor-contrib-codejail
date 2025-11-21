@@ -1,8 +1,14 @@
 Codejail plugin for `Tutor`_
 ============================
 
-Tutor plugin that configures and runs a `Codejail Service`_ using a REST API. `Codejail`_ allows for the
-secure execution of untrusted code within sandboxes, providing a safe environment for running potentially dangerous code.
+Tutor plugin that configures and runs a `Codejail Service`_ using a REST API.
+`Codejail`_ allows for the secure execution of untrusted code within sandboxes,
+providing a safe environment for running potentially dangerous code.
+
+Starting from the Ulmo release, the codejail plugin is transitioning to an
+alternative implementation of the safe-exec API ( `_Codejail Service V2`_).
+You can opt-in to use this new implementation on Ulmo before it finally becomes
+the default on the Verawood release.
 
 .. _Tutor: https://docs.tutor.overhang.io
 .. _Codejail Service: https://github.com/eduNEXT/codejailservice
@@ -69,7 +75,13 @@ To customize the configuration, update the following settings in Tutor:
 - ``SERVICE_V2_VERSION``: (default: ``{{ OPENEDX_COMMON_VERSION }}``)
 - ``USE_SERVICE_V2``: (default: ``False``)
 
-The ``CODEJAIL_V2_*`` settings are meant to be used only during the Ulmo release a
+The ``CODEJAIL_V2_*`` settings are meant to be used only during the Ulmo
+release and will be phased-out during the Verawood release.
+
+To opt-in to the new implementation of the code-exec API set ``USE_SERVICE_V2``
+to ``True`` and re-deploy your environment. If you are using a a custom image
+for the codejail service you will need to rebuild it with ``USE_SERVICE_V2``
+set to ``True`.
 
 Custom Image
 ~~~~~~~~~~~~

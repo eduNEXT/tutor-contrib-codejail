@@ -38,6 +38,6 @@ codejail-apparmor-loader:
     - -v=2
     - /profiles
   volumes:
-    - ../plugins/codejail/apps/profiles/docker-edx-sandbox:/profiles/docker-edx-sandbox:ro
+    - ../plugins/codejail/apps/profiles/:/profiles/:ro
     - /sys:/sys
     - /etc/apparmor.d:/etc/apparmor.d
