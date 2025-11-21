@@ -6,6 +6,7 @@ secure execution of untrusted code within sandboxes, providing a safe environmen
 
 .. _Tutor: https://docs.tutor.overhang.io
 .. _Codejail Service: https://github.com/eduNEXT/codejailservice
+.. _Codejail Service V2: https://github.com/openedx/codejail-service
 .. _Codejail: https://github.com/openedx/codejail
 
 Installation
@@ -23,9 +24,9 @@ You can install a specific version by adding the tag, branch, or commit:
 
 .. code-block:: bash
 
-    pip install tutor-contrib-codejail==v20.0.0
+    pip install tutor-contrib-codejail~=21.0
     # or install from the source
-    pip install git+https://github.com/edunext/tutor-contrib-codejail@v20.0.0
+    pip install git+https://github.com/edunext/tutor-contrib-codejail@v21.0.0
 
 Usage
 -----
@@ -55,14 +56,20 @@ Configuration
 To customize the configuration, update the following settings in Tutor:
 
 - ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
+- ``CODEJAIL_DOCKER_IMAGE_V2`` : (default: ``{{ CODEJAIL_DOCKER_IMAGE }}-v2``)
 - ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:{{__version__}}``)
 - ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
 - ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
 - ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (default: ``[]``)
 - ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.11.9``)
-- ``CODEJAIL_SERVICE_REPOSITORY`` (default ``https://github.com/edunext/codejailservice.git```)
-- ``CODEJAIL_SERVICE_VERSION`` (default: ``release/teak.1``),
+- ``CODEJAIL_SERVICE_REPOSITORY`` (default: ``https://github.com/edunext/codejailservice.git```)
+- ``CODEJAIL_SERVICE_VERSION`` (default: ``{{ OPENEDX_COMMON_VERSION }}``),
 - ``CODEJAIL_SKIP_INIT`` (default: ``False``)
+- ``SERVICE_V2_REPOSITORY``: (default: ``https://github.com/openedx/codejail-service.git``)
+- ``SERVICE_V2_VERSION``: (default: ``{{ OPENEDX_COMMON_VERSION }}``)
+- ``USE_SERVICE_V2``: (default: ``False``)
+
+The ``CODEJAIL_V2_*`` settings are meant to be used only during the Ulmo release a
 
 Custom Image
 ~~~~~~~~~~~~
