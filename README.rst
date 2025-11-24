@@ -56,19 +56,13 @@ To customize the configuration, update the following settings in Tutor:
 
 - ``CODEJAIL_APPARMOR_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejail_apparmor_loader:latest``)
 - ``CODEJAIL_DOCKER_IMAGE``: (default: ``docker.io/ednxops/codejailservice:{{__version__}}``)
-- ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
 - ``CODEJAIL_ENABLE_K8S_DAEMONSET`` (default: ``False``)
-- ``CODEJAIL_SKIP_INIT`` (default: ``False``)
+- ``CODEJAIL_ENFORCE_APPARMOR`` (default: ``True``)
+- ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (default: ``[]``)
 - ``CODEJAIL_SANDBOX_PYTHON_VERSION`` (default: ``3.11.9``)
-- ``CODEJAIL_EXTRA_PIP_REQUIREMENTS`` (optional) A list of pip requirements to add to your sandbox.
-- ``CODEJAIL_SERVICE_VERSION`` (default: ``release/teak.1``),
 - ``CODEJAIL_SERVICE_REPOSITORY`` (default ``https://github.com/edunext/codejailservice.git```)
-
-.. code-block:: yaml
-
-    CODEJAIL_EXTRA_PIP_REQUIREMENTS:
-    - pybryt
-
+- ``CODEJAIL_SERVICE_VERSION`` (default: ``release/teak.1``),
+- ``CODEJAIL_SKIP_INIT`` (default: ``False``)
 
 Custom Image
 ~~~~~~~~~~~~
