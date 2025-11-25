@@ -1,6 +1,12 @@
 - name: codejail-profile
   files:
   - plugins/codejail/apps/profiles/docker-edx-sandbox
+  options:
+    labels:
+        app.kubernetes.io/name: codejail-aa-loader
 - name: settings-codejail
   files:
   - plugins/codejail/apps/config/tutor.py
+  options:
+    labels:
+        app.kubernetes.io/name: codejailservice

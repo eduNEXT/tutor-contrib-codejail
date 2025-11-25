@@ -58,10 +58,13 @@ RUN mkdir -p common/lib/
 ADD $EDX_PLATFORM_REPOSITORY#$EDX_PLATFORM_VERSION:requirements/edx-sandbox/ .
 RUN pip3 install -r releases/teak.txt
 
+{% if CODEJAIL_EXTRA_PIP_REQUIREMENTS %}
 # Allows you to add extra pip requirements to your codejail sandbox.
-{% if CODEJAIL_EXTRA_PIP_REQUIREMENTS is defined %}
-{% for extra_requirements in CODEJAIL_EXTRA_PIP_REQUIREMENTS %}RUN --mount=type=cache,target=/openedx/.cache/pip,sharing=shared pip install '{{ extra_requirements }}'
-{% endfor %}
+RUN --mount=type=cache,target=/openedx/.cache/pip,sharing=shared pip install \
+{%- for extra_requirements in CODEJAIL_EXTRA_PIP_REQUIREMENTS %}
+  '{{ extra_requirements }}' \
+{%- endfor %}
+;
 {% endif %}
 
 ##### Prod image
