@@ -40,7 +40,6 @@ Run the initialization jobs to install the required AppArmor profile on your hos
 .. code-block:: bash
 
     tutor config save
-    tutor local do init --limit codejail
 
 Finally, the platform can be run as usual:
 
@@ -78,7 +77,7 @@ In most cases, you can work with the provided Docker image for the release. Howe
 
 . Additional requirements are included in the sandbox via ``CODEJAIL_EXTRA_PIP_REQUIREMENTS``.
 - A different version of Python is set for the sandbox environment via ``CODEJAIL_SANDBOX_PYTHON_VERSION``.
-- The custom version of edx-platform that changes the contents of requirements/edx-sandbox.
+- You are using a custom version of edx-platform that changes the contents of requirements/edx-sandbox.
 
 Create a new image running:
 
@@ -161,24 +160,6 @@ Once the course is imported, go to any section and select an exercise (`section 
     :alt: Example when codejail is working
 
 In this case, the section's content will render correctly and work as specified in the instructions of the problem.
-
-Possible failure case
-~~~~~~~~~~~~~~~~~~~~~
-
-In case you forget to run ``tutor local do init --limit codejail`` for AppArmor profile, this error in
-``Studio`` will arise::
-
-    Error formatting HTML for the problem:
-    cannot create LoncapaProblem block-v1:edX+DemoX+Demo_Course+type@problem+block@integral1: Error while
-    executing script code: Codejail API Service is unavailable. Please try again in a few minutes.
-
-.. image:: ./docs/resources/Codejailfail.png
-    :width: 750px
-    :align: center
-    :alt: Example when codejail is not working
-
-This indicates that the Codejail service is either not turned on or not working properly. Please ensure to follow
-the steps outlined in the usage section to prevent this issue.
 
 How to Contribute
 -----------------

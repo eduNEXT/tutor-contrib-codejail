@@ -11,3 +11,18 @@ codejailservice:
     - ../plugins/codejail/apps/config/tutor.py:/openedx/codejailservice/codejailservice/tutor.py:ro
     - ../../data/codejail:/openedx/data
   restart: unless-stopped
+  depends_on:
+    - codejail-apparmor-loader
+
+codejail-apparmor-loader:
+  image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }}
+  privileged: true
+  command:
+    - /usr/bin/loader
+    - -logtostderr
+    - -v=2
+    - /profiles
+  volumes:
+    - ../plugins/codejail/apps/profiles/docker-edx-sandbox:/profiles/docker-edx-sandbox:ro
+    - /sys:/sys
+    - /etc/apparmor.d:/etc/apparmor.d
