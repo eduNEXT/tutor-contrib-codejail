@@ -12,7 +12,8 @@ codejailservice:
     - ../plugins/codejail/apps/codejail-service-v2/tutor.py:/app/codejail_service/settings/tutor.py:ro
   restart: unless-stopped
   depends_on:
-    - codejail-apparmor-loader
+    codejail-apparmor-loader:
+        condition: service_completed_successfully
 {% else %}
 codejailservice:
   image: {{ CODEJAIL_DOCKER_IMAGE }}
@@ -26,7 +27,8 @@ codejailservice:
     - ../plugins/codejail/apps/codejail/tutor.py:/openedx/codejailservice/codejailservice/tutor.py:ro
   restart: unless-stopped
   depends_on:
-    - codejail-apparmor-loader
+    codejail-apparmor-loader:
+        condition: service_completed_successfully
 {% endif %}
 
 codejail-apparmor-loader:
