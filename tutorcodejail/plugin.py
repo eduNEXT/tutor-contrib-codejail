@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import typing as t
 from glob import glob
 from pathlib import Path
 
@@ -75,7 +74,7 @@ hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
 
 @hooks.Filters.IMAGES_BUILD.add()
 def _build_codejail_images(
-    images: list[tuple[str, t.Union[str, tuple[str, ...]], str, tuple[str, ...]]],
+    images: list[tuple[str, str | tuple[str, ...], str, tuple[str, ...]]],
     tutor_config: Config,
 ):
     """Choose the appropiate build context when using CODEJAIL_USE_SERVICE_V2."""
@@ -106,7 +105,7 @@ def _build_codejail_images(
 
 @hooks.Filters.IMAGES_PUSH.add()
 def _push_codejail_images(
-    images: list[tuple[str, t.Union[str, tuple[str, ...]], str, tuple[str, ...]]],
+    images: list[tuple[str, str]],
     tutor_config: Config,
 ):
     """Choose the appropiate image tag when using CODEJAIL_USE_SERVICE_V2."""
@@ -130,9 +129,7 @@ def _push_codejail_images(
 
 # Boilerplate code
 # Add the "templates" folder as a template root
-hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
-    str(importlib_resources.files("tutorcodejail") / "templates")
-)
+hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(str(importlib_resources.files("tutorcodejail") / "templates"))
 # Render the "build" and "apps" folders
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     [
@@ -149,7 +146,5 @@ for path in glob(str(importlib_resources.files("tutorcodejail") / "patches" / "*
 hooks.Filters.CONFIG_DEFAULTS.add_items(
     [(f"CODEJAIL_{key}", value) for key, value in config.get("defaults", {}).items()]
 )
-hooks.Filters.CONFIG_UNIQUE.add_items(
-    [(f"CODEJAIL_{key}", value) for key, value in config.get("unique", {}).items()]
-)
+hooks.Filters.CONFIG_UNIQUE.add_items([(f"CODEJAIL_{key}", value) for key, value in config.get("unique", {}).items()])
 hooks.Filters.CONFIG_OVERRIDES.add_items(list(config.get("overrides", {}).items()))
