@@ -1,2 +1,3 @@
-"""Helps you keep your cool when creating dozens of open edX and eduNEXT environments."""
-__version__ = "21.0.0"
+from importlib import metadata
+
+__version__ = metadata.version("tutor-contrib-codejail")
