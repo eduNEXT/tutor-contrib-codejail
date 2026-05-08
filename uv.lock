@@ -849,7 +849,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/ba/95/13e383d7cfcd3b562
 
 [[package]]
 name = "tutor-contrib-codejail"
-version = "21.0.0"
+version = "21.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "tutor" },

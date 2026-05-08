@@ -1,6 +1,6 @@
 [project]
 name = "tutor-contrib-codejail"
-version = "21.0.0"
+version = "21.0.1"
 description = "Codejail plugin for Tutor"
 readme = "README.md"
 license-files = ["LICENSE"] 
