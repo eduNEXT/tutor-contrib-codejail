@@ -13,6 +13,27 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-22.0.0'></a>
+## 22.0.0 — 2026-08-12
+
+### Added
+
+- Support for the Verawood release.
+
+### Changed
+
+- The default AppArmor Profile now requires AppArmor 4, which available on
+  ubuntu 24.04 or newer.
+- AppArmor enforcement is now a requirement and can not be turned off.
+- The container name and internal services for kubernetes and docker was changed
+  from `codejailservice` to `codejail`.
+
+### Removed
+
+- Support for the old remote service implementation of codejail service
+  ([codejailservice](https://github.com/edunext/codejailservice.git)] has been
+  dropped.
+
 <a id='changelog-21.0.1'></a>
 ## 21.0.1 — 2026-05-08
 
@@ -25,7 +46,7 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 ## 21.0.0 - 2025-11-04
 
 - feat!: add support for the Ulmo release
- 
+
   This changes also include support for openedx/codejail-service as an
   alternative implementation of the safe_exec REST API.
 
@@ -44,14 +65,14 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
   appropriate labels.
 
 - feat: use an "init service" to load the apparmor profile (#63)
- 
+
   This follows the same logic as the "permissions" service used by tutor
   core. The `codejail-apparmor-loader` service runs the command used
   previously by the init job.
- 
+
   It makes more sense to handling loading of the apparmor profile with an
   init service:
- 
+
   - The profile is ephemeral, rebooting the host will require to load it
     again.
   - The profile is a dependency for the container to start. Things like
@@ -147,7 +168,7 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 - Add support for Olive release (#28).
 - Adds mantainer group.
 
-## 14.1.0 - 2022-09-26 
+## 14.1.0 - 2022-09-26
 
 ### Added
 
@@ -163,14 +184,14 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 
 - Bump version according tutor practices for Nutmeg release.
 
-## 13.0.0 - 2022-05-02 
+## 13.0.0 - 2022-05-02
 
 ### Added
 
 - Add repo documentation.
 - Bump version according tutor practices for Maple release.
 
-## 12.0.2 - 2022-04-29 
+## 12.0.2 - 2022-04-29
 
 ### Added
 
