@@ -1,6 +1,6 @@
 [project]
 name = "tutor-contrib-codejail"
-version = "21.0.1"
+version = "22.0.0"
 description = "Codejail plugin for Tutor"
 readme = "README.md"
 license-files = ["LICENSE"] 
@@ -9,7 +9,7 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "tutor~=21.0"
+    "tutor~=22.0"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -34,6 +34,17 @@ codejail = "tutorcodejail.plugin"
 module-root = "."
 module-name = "tutorcodejail"
 
+[tool.uv.sources]
+tutor = {
+    git = "https://github.com/overhangio/tutor",
+    rev = "59264ca9f9c6a8e67622ae72080684ffc6ec7e2a", # Verawood
+}
+tutor-mfe = {
+    git = "https://github.com/overhangio/tutor-mfe",
+    rev = "72370dd4ace29e1a7a646da57eabc8e098ecee67", # Verawood
+}
+
+
 [build-system]
 requires = ["uv_build>=0.9.5,<0.12.0"]
 build-backend = "uv_build"
@@ -44,6 +55,7 @@ dev = [
     "ruff",
     "scriv>=1.8.0",
     "ty>=0.0.34",
+	"tutor-mfe",
 ]
 
 [tool.ruff]
