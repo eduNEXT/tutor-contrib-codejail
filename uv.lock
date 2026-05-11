@@ -830,8 +830,8 @@ wheels = [
 
 [[package]]
 name = "tutor"
-version = "21.0.5"
-source = { registry = "https://pypi.org/simple" }
+version = "22.0.0"
+source = { git = "https://github.com/overhangio/tutor?rev=59264ca9f9c6a8e67622ae72080684ffc6ec7e2a#59264ca9f9c6a8e67622ae72080684ffc6ec7e2a" }
 dependencies = [
     { name = "appdirs" },
     { name = "click" },
@@ -845,11 +845,10 @@ dependencies = [
     { name = "pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/95/13e383d7cfcd3b5621de1a10feb30ecfd6851c27890bbaf5eab343936112/tutor-21.0.5.tar.gz", hash = "sha256:ea53309fac53a77bd2056913ef877c43caf59b10e0c14900882b0653ef51be01", size = 113001, upload-time = "2026-05-05T12:26:51.773Z" }
 
 [[package]]
 name = "tutor-contrib-codejail"
-version = "21.0.1"
+version = "22.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "tutor" },
@@ -860,18 +859,28 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
     { name = "scriv" },
+    { name = "tutor-mfe" },
     { name = "ty" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "tutor", specifier = "~=21.0" }]
+requires-dist = [{ name = "tutor", git = "https://github.com/overhangio/tutor?rev=59264ca9f9c6a8e67622ae72080684ffc6ec7e2a" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "ruff" },
     { name = "scriv", specifier = ">=1.8.0" },
+    { name = "tutor-mfe", git = "https://github.com/overhangio/tutor-mfe?rev=72370dd4ace29e1a7a646da57eabc8e098ecee67" },
     { name = "ty", specifier = ">=0.0.34" },
+]
+
+[[package]]
+name = "tutor-mfe"
+version = "22.0.0"
+source = { git = "https://github.com/overhangio/tutor-mfe?rev=72370dd4ace29e1a7a646da57eabc8e098ecee67#72370dd4ace29e1a7a646da57eabc8e098ecee67" }
+dependencies = [
+    { name = "tutor" },
 ]
 
 [[package]]

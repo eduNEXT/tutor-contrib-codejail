@@ -1,17 +1,12 @@
 - name: codejail-profile
   files:
-  - plugins/codejail/apps/profiles/docker-edx-sandbox.profile
   - plugins/codejail/apps/profiles/openedx-codejail-service.profile
   options:
     labels:
         app.kubernetes.io/name: codejail-aa-loader
-- name: settings-codejail
+- name: codejail-settings
   files:
-  {% if CODEJAIL_USE_SERVICE_V2 %}
-  - plugins/codejail/apps/codejail-service-v2/tutor.py
-  {% else %}
   - plugins/codejail/apps/codejail/tutor.py
-  {% endif %}
   options:
     labels:
-        app.kubernetes.io/name: codejailservice
+        app.kubernetes.io/name: codejail
