@@ -83,3 +83,30 @@ jobs:
           uv publish \
               --trusted-publishing always \
               dist/*
+
+  image_build:
+    runs-on: ubuntu-latest
+    name: Build the docker images
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          version: ${{ env.UV_VERSION }}
+
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build codejail image
+        env:
+          TUTOR_ROOT: /tmp/tutor-root
+        run: |
+          uv run tutor plugins disable mfe indigo
+          uv run tutor plugins enable codejail
+          uv run tutor config save
+          uv run tutor images build codejail \
+            -d "--cache-from=type=gha" \
+            -d "--cache-to=type=gha,mode=max"
