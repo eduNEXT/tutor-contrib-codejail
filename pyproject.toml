@@ -3,7 +3,7 @@ name = "tutor-contrib-codejail"
 version = "21.0.1"
 description = "Codejail plugin for Tutor"
 readme = "README.md"
-license-files = ["LICENSE"] 
+license-files = ["LICENSE"]
 authors = [
     { name = "eduNEXT" }
 ]
@@ -35,7 +35,7 @@ module-root = "."
 module-name = "tutorcodejail"
 
 [build-system]
-requires = ["uv_build>=0.9.5,<0.12.0"]
+requires = ["uv_build>=0.9.5,<0.13.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
