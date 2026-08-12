@@ -1,35 +1,16 @@
 #############Codejail service
-{% if CODEJAIL_USE_SERVICE_V2 %}
-codejailservice:
-  image: {{ CODEJAIL_DOCKER_IMAGE_V2 }}
-  ports:
-    - 8550:8550
+codejail:
+  image: {{ CODEJAIL_DOCKER_IMAGE }}
   environment:
     DJANGO_SETTINGS_MODULE: codejail_service.settings.tutor
   security_opt:
     - apparmor:openedx_codejail_service
   volumes:
-    - ../plugins/codejail/apps/codejail-service-v2/tutor.py:/app/codejail_service/settings/tutor.py:ro
+    - ../plugins/codejail/apps/codejail/tutor.py:/app/codejail_service/settings/tutor.py:ro
   restart: unless-stopped
   depends_on:
     codejail-apparmor-loader:
         condition: service_completed_successfully
-{% else %}
-codejailservice:
-  image: {{ CODEJAIL_DOCKER_IMAGE }}
-  environment:
-    FLASK_APP_SETTINGS: codejailservice.tutor.ProductionConfig
-  {% if CODEJAIL_ENFORCE_APPARMOR %}
-  security_opt:
-    - apparmor:docker-edx-sandbox
-  {% endif %}
-  volumes:
-    - ../plugins/codejail/apps/codejail/tutor.py:/openedx/codejailservice/codejailservice/tutor.py:ro
-  restart: unless-stopped
-  depends_on:
-    codejail-apparmor-loader:
-        condition: service_completed_successfully
-{% endif %}
 
 codejail-apparmor-loader:
   image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }}

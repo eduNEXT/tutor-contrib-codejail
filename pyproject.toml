@@ -1,6 +1,6 @@
 [project]
 name = "tutor-contrib-codejail"
-version = "21.0.1"
+version = "22.0.0"
 description = "Codejail plugin for Tutor"
 readme = "README.md"
 license-files = ["LICENSE"]
@@ -9,7 +9,7 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "tutor~=21.0"
+    "tutor~=22.0"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",

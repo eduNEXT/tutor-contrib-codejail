@@ -1,100 +1,173 @@
-FROM docker.io/ubuntu:22.04 AS minimal
-LABEL mantainer="edunext.co <contact@edunext.co>"
+FROM scratch AS codejail-service-code
+ARG CODEJAIL_SERVICE_REPO={{ CODEJAIL_SERVICE_REPOSITORY }}
+ARG CODEJAIL_SERVICE_VERSION={{ CODEJAIL_SERVICE_VERSION }}
+ADD ${CODEJAIL_SERVICE_REPO}#${CODEJAIL_SERVICE_VERSION} /
+
+FROM scratch AS sandbox-dependencies
+# Where to get the Python dependencies lockfile for installing
+# packages into the sandbox environment. Defaults to the codejail
+# dependencies in edx-platform.
+ARG SANDBOX_DEPS_REPO={{ CODEJAIL_SERVICE_REPOSITORY }}
+ARG SANDBOX_DEPS_VERSION={{ CODEJAIL_SERVICE_VERSION }}
+# Path to the lockfile in the deps repo, as dir + filename.
+#
+# The path base.txt will get the latest dependencies, but this needs
+# to be coordinated with SANDBOX_PY_VER as each release has a
+# different Python support window.
+ARG SANDBOX_DEPS_SRC_DIR=requirements/sandbox
+ADD ${SANDBOX_DEPS_REPO}#${SANDBOX_DEPS_VERSION}:${SANDBOX_DEPS_SRC_DIR} /
+
+FROM docker.io/ubuntu:24.04 AS app
+ARG APP_PY_VER=3.12
+# See codejail-service deployment and configuration docs for why we need to select
+# a UID/GID that is unlikely to collide with anything on the host. (Short answer:
+# RLIMIT_NPROC UID-global usage pool, and Docker not isolating UIDs.)
+#
+# Selected via: python3 -c 'import random; print(random.randrange(3000, 2 ** 31))'
+ARG APP_UID=15826504
+ARG APP_GID=$APP_UID
+
+ARG SANDBOX_DEPS_SRC_FILE=base.txt
+
+# Python version for sandboxed executions. This must be coordinated with
+# `SANDBOX_DEPS_SRC_*` to ensure compatibility.
+ARG SANDBOX_PY_VER={{ CODEJAIL_SANDBOX_PYTHON_VERSION }}
+
+
+##### Base app installation #####
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && \
-    apt install -y build-essential curl git language-pack-en llvm
+ARG APT_INSTALL="apt-get install --quiet --yes --no-install-recommends"
+
+# The codejail library specifies a certain structure to how the sandboxing is
+# performed. (See the documentation in the codejail library README:
+# https://github.com/openedx/codejail).
+#
+# Some of this structure can be changed, and some cannot. Any changes that are
+# possible will also need to be coordinated with changes to the apparmor profile
+# as well as to the `CODE_JAIL` Django settings. Accordingly, it's best to just
+# *avoid* making changes to this part.
+
+# The location of the virtualenv that code executions in the sandbox will use.
+# This is a critical path, as SAND_VENV/bin/python is what is targeted by the
+# AppArmor confinement. It must also match the Django setting
+# `CODE_JAIL.python_bin`. The codejail docs refer to this as `<SANDENV>`.
+ARG SAND_VENV=/sandbox/venv
+# The user account that will run code executions, described just as "the sandbox
+# user" in codejail docs. This needs to match the Django setting
+# `CODE_JAIL.user` and the sudoers file.
+ARG SAND_USER=sandbox
+# Same situation as for APP_UID
+ARG SAND_UID=33552349
+ARG SAND_GID=$SAND_UID
+# The user account that runs the regular web app, described in codejail docs as
+# `<SANDBOX_CALLER>`. Needs to match the sudoers file.
+ARG APP_USER=app
+
+# The codejail-service API tests check for the visibility of this environment
+# variable from the sandbox. (It should not be visible.) This helps test for
+# environment leakage into the sandbox.
+ENV CJS_TEST_ENV_LEAKAGE=yes
+
+# Packages installed:
+#
+# - language-pack-en, locales: Ubuntu locale support so that system utilities
+#   have a consistent language and time zone.
+# - sudo: Web user (`APP_USER`) needs to be able to sudo as `SAND_USER`
+# - python*: Specific versions of Python -- the service runs with a recent version, but
+#   the sandboxed code will usually need a different (older) version. This is also why
+#   we need to pull in the deadsnakes PPA.
+# - python*-dev: Header files for python extensions, required by many source wheels
+# - python*-venv: Allow creation of virtualenvs
+#
+# We also have to do a bit of bootstrapping here installing the
+# `software-properties-common` package gives us `add-apt-repository`, which
+# allows us to add the deadsnakes PPA more easily (that is, without messing
+# about with repository keys).
+RUN <<EOCMD
+  set -eu
+  apt-get update
+  ${APT_INSTALL} \
+    software-properties-common \
+  ;
+  add-apt-repository ppa:deadsnakes/ppa
+  ${APT_INSTALL} \
+    language-pack-en \
+    locales \
+    python${APP_PY_VER} \
+    python${APP_PY_VER}-dev \
+    python${APP_PY_VER}-venv \
+    python${SANDBOX_PY_VER} \
+    python${SANDBOX_PY_VER}-venv \
+    sudo  \
+  ;
+EOCMD
+
+RUN locale-gen en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-###### Install python with pyenv in /opt/pyenv and create virtualenv in /openedx/venv
-FROM minimal AS python
-# https://github.com/pyenv/pyenv/wiki/Common-build-problems#prerequisites
-RUN apt update && \
-    apt install -y libssl-dev zlib1g-dev libbz2-dev \
-    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git subversion
-ENV PYENV_ROOT=/opt/pyenv
-RUN git clone https://github.com/pyenv/pyenv $PYENV_ROOT --branch v2.6.12 --depth 1
+# We'll build the virtualenv and pre-compile Python as root, but switch to app user
+# for actually running the application.
+RUN groupadd --gid $APP_GID $APP_USER
+RUN useradd --no-log-init --no-create-home --shell /bin/false --uid $APP_UID --gid $APP_GID $APP_USER
 
-ARG CODEJAILSERVICE_PYTHON_VERSION=3.11.14
-RUN $PYENV_ROOT/bin/pyenv install $CODEJAILSERVICE_PYTHON_VERSION
+COPY --from=codejail-service-code / /app
 
-ARG SANDBOX_PYTHON_VERSION="{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}"
-RUN git clone https://github.com/esinker/pyenv-version-alias $PYENV_ROOT/plugins/pyenv-alias
-RUN VERSION_ALIAS="{{ CODEJAIL_SANDBOX_PYTHON_VERSION }}_sandbox" \
-    $PYENV_ROOT/bin/pyenv install -f $SANDBOX_PYTHON_VERSION
+WORKDIR /app
 
-RUN "$PYENV_ROOT/versions/$CODEJAILSERVICE_PYTHON_VERSION/bin/python" -m venv /openedx/venv
-RUN "$PYENV_ROOT/versions/"$SANDBOX_PYTHON_VERSION"_sandbox/bin/python" -m venv --copies /sandbox/venv
+RUN <<EOCMD
+    set -eu
+    python${APP_PY_VER} -m venv /venv
+    /venv/bin/pip install -r /app/requirements/pip.txt
+    /venv/bin/pip install -r /app/requirements/pip-tools.txt
+EOCMD
 
-###### Codejail service code
-FROM minimal AS code
-RUN git clone {{ CODEJAIL_SERVICE_REPOSITORY }} --branch {{ CODEJAIL_SERVICE_VERSION }} --depth 1 /openedx/codejailservice
-WORKDIR /openedx/codejailservice
+##### Sandbox environment #####
 
-###### Install python requirements in virtualenv
-FROM python AS codejailservice-python-requirements
+# Codejail executions will be run under this user's account.
+RUN groupadd --gid $SAND_GID $SAND_USER
+RUN useradd --no-log-init --no-create-home --shell /bin/false --uid $SAND_UID --gid $SAND_GID $SAND_USER
 
-ENV PATH=/openedx/venv/bin:${PATH}
-ENV VIRTUAL_ENV=/openedx/venv/
+# We need to use --copies so that there is a distinct Python
+# executable to confine.
+RUN mkdir -p ${SAND_VENV}
+RUN python${SANDBOX_PY_VER} -m venv --clear --copies ${SAND_VENV}
 
-COPY --from=code /openedx/codejailservice /openedx/codejailservice
-WORKDIR /openedx/codejailservice
-RUN pip3 install -r requirements/base.txt
-RUN pip3 install uwsgi==2.0.21
-
-###### Install python requirements in virtualenv
-FROM python AS sandbox-python-requirements
-
-ARG EDX_PLATFORM_REPOSITORY={{ EDX_PLATFORM_REPOSITORY }}
-ARG EDX_PLATFORM_VERSION={{ EDX_PLATFORM_VERSION }}
-
-ENV PATH=/sandbox/venv/bin:${PATH}
-ENV VIRTUAL_ENV=/sandbox/venv/
-
-WORKDIR /var/tmp
-RUN mkdir -p common/lib/
-
-ADD $EDX_PLATFORM_REPOSITORY#$EDX_PLATFORM_VERSION:requirements/edx-sandbox/ .
-RUN pip3 install -r base.txt
-
-{% if CODEJAIL_EXTRA_PIP_REQUIREMENTS %}
-# Allows you to add extra pip requirements to your codejail sandbox.
-RUN --mount=type=cache,target=/openedx/.cache/pip,sharing=shared pip install \
+# Install the Python libraries used by the sandbox.
+RUN --mount=type=bind,from=sandbox-dependencies,source=/,target=/tmp/sandbox-dependencies <<EOCMD
+    ${SAND_VENV}/bin/pip install -r /tmp/sandbox-dependencies/${SANDBOX_DEPS_SRC_FILE} \
 {%- for extra_requirements in CODEJAIL_EXTRA_PIP_REQUIREMENTS %}
-  '{{ extra_requirements }}' \
+    '{{ extra_requirements }}' \
 {%- endfor %}
-;
-{% endif %}
+    ;
+EOCMD
 
-##### Prod image
-FROM minimal AS production
 
-# Install system requirements
-RUN apt update && \
-    apt install -y sudo
+# Sudoers config as specified by codejail's docs.
+# - `find` is used in sandbox cleanup
+# - `pkill` is used to terminate overlong execution
+COPY <<01-sandbox /etc/sudoers.d/
+${APP_USER} ALL=(${SAND_USER}) SETENV:NOPASSWD:${SAND_VENV}/bin/python
+${APP_USER} ALL=(${SAND_USER}) SETENV:NOPASSWD:/usr/bin/find
+${APP_USER} ALL=(ALL) NOPASSWD:/usr/bin/pkill
+01-sandbox
 
-COPY --from=code /openedx/codejailservice /openedx/codejailservice
-COPY --from=python /opt/pyenv /opt/pyenv
-COPY --from=codejailservice-python-requirements /openedx/venv /openedx/venv
-COPY --from=sandbox-python-requirements /sandbox/venv /sandbox/venv
+ENV PATH="/venv/bin:$PATH"
 
-# Setup sandbox
-ENV SANDBOX_ENV=/sandbox/venv
-RUN groupadd -r sandbox && useradd -m -r -g sandbox sandbox && chown -R sandbox:sandbox /sandbox
+FROM app AS prod
 
-ENV PATH=/openedx/venv/bin:${PATH}
-ENV VIRTUAL_ENV=/openedx/venv/
-ENV UWSGI_WORKERS=2
-WORKDIR /openedx/codejailservice
+RUN /venv/bin/pip-sync requirements/base.txt
+RUN python${APP_PY_VER} -m compileall /venv /app
 
-EXPOSE 8550
+# Drop to unprivileged user for running service
+USER ${APP_USER}
 
-CMD [ "uwsgi", \
-    "--http=0.0.0.0:8550", \
-    "--thunder-lock", \
-    "--single-interpreter", \
-    "--enable-threads", \
-    "--buffer-size=8192", \
-    "--max-requests=1000", \
-    "--wsgi-file=/openedx/codejailservice/wsgi.py" ]
+CMD [ "gunicorn", \
+    "--config=/app/codejail_service/docker_gunicorn_configuration.py", \
+    "--name=codejail-service", \
+    "--bind=0.0.0.0:8000",  \
+    "--max-requests=1000",  \
+    "--log-file=-", \
+    "codejail_service.wsgi:application" ]

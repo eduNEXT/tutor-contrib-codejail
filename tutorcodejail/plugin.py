@@ -8,7 +8,6 @@ from pathlib import Path
 
 import importlib_resources
 from tutor import hooks
-from tutor.types import Config
 
 from .__about__ import __version__
 
@@ -21,18 +20,13 @@ config = {
     "defaults": {
         "APPARMOR_DOCKER_IMAGE": "docker.io/ednxops/codejail_apparmor_loader:apparmor-4",
         "DOCKER_IMAGE": f"docker.io/ednxops/codejailservice:{__version__}",
-        "DOCKER_IMAGE_V2": "{{ CODEJAIL_DOCKER_IMAGE }}-v2",
         "ENABLE_K8S_DAEMONSET": False,
         "ENFORCE_APPARMOR": True,
         "EXTRA_PIP_REQUIREMENTS": [],
-        "HOST": "codejailservice",
-        "SANDBOX_PYTHON_VERSION": "3.11.14",
-        "SERVICE_REPOSITORY": "https://github.com/edunext/codejailservice.git",
-        "SERVICE_V2_REPOSITORY": "https://github.com/openedx/codejail-service.git",
-        "SERVICE_V2_VERSION": "{{ OPENEDX_COMMON_VERSION }}",
+        "SANDBOX_PYTHON_VERSION": "3.12",
+        "SERVICE_REPOSITORY": "https://github.com/openedx/codejail-service.git",
         "SERVICE_VERSION": "{{ OPENEDX_COMMON_VERSION }}",
         "SKIP_INIT": False,
-        "USE_SERVICE_V2": False,
         "VERSION": __version__,
     },
     "overrides": {},
@@ -71,60 +65,47 @@ hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
     ]
 )
 
+hooks.Filters.IMAGES_BUILD.add_item(
+    (
+        "codejail",
+        ("plugins", "codejail", "build", "codejail"),
+        "{{ CODEJAIL_DOCKER_IMAGE }}",
+        (),
+    ),
+)
+hooks.Filters.IMAGES_PULL.add_item(
+    (
+        "codejail",
+        "{{ CODEJAIL_DOCKER_IMAGE }}",
+    )
+)
+hooks.Filters.IMAGES_PUSH.add_item(
+    (
+        "codejail",
+        "{{ CODEJAIL_DOCKER_IMAGE }}",
+    )
+)
 
-@hooks.Filters.IMAGES_BUILD.add()
-def _build_codejail_images(
-    images: list[tuple[str, str | tuple[str, ...], str, tuple[str, ...]]],
-    tutor_config: Config,
-):
-    """Choose the appropiate build context when using CODEJAIL_USE_SERVICE_V2."""
-    # TODO: Remove after the Verawood update
-    if tutor_config.get("CODEJAIL_USE_SERVICE_V2"):
-        codejail_img = (
-            "codejail",
-            "plugins/codejail/build/codejail-service",
-            "{{ CODEJAIL_DOCKER_IMAGE_V2 }}",
-            (),
-        )
-    else:
-        codejail_img = (
-            "codejail",
-            "plugins/codejail/build/codejail",
-            "{{ CODEJAIL_DOCKER_IMAGE }}",
-            (),
-        )
-    apparmor_img = (
+hooks.Filters.IMAGES_BUILD.add_item(
+    (
         "codejail_apparmor",
         ("plugins", "codejail", "build", "codejail_apparmor"),
         "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
         (),
-    )
-
-    return images + [codejail_img, apparmor_img]
-
-
-@hooks.Filters.IMAGES_PUSH.add()
-def _push_codejail_images(
-    images: list[tuple[str, str]],
-    tutor_config: Config,
-):
-    """Choose the appropiate image tag when using CODEJAIL_USE_SERVICE_V2."""
-    # TODO: Remove after the Verawood update
-    if tutor_config.get("CODEJAIL_USE_SERVICE_V2"):
-        codejail_img = (
-            "codejail",
-            "{{ CODEJAIL_DOCKER_IMAGE_V2 }}",
-        )
-    else:
-        codejail_img = (
-            "codejail",
-            "{{ CODEJAIL_DOCKER_IMAGE }}",
-        )
-    apparmor_img = (
+    ),
+)
+hooks.Filters.IMAGES_PULL.add_item(
+    (
         "codejail_apparmor",
         "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
     )
-    return images + [codejail_img, apparmor_img]
+)
+hooks.Filters.IMAGES_PUSH.add_item(
+    (
+        "codejail_apparmor",
+        "{{CODEJAIL_APPARMOR_DOCKER_IMAGE}}",
+    )
+)
 
 
 # Boilerplate code
