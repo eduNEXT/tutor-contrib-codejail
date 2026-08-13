@@ -15,7 +15,7 @@ spec:
         app.kubernetes.io/name: codejail
     spec:
       securityContext:
-        appArmorProfile: 
+        appArmorProfile:
           type: Localhost
           localhostProfile: openedx_codejail_service
       containers:
@@ -28,12 +28,12 @@ spec:
               value: codejail_service.settings.tutor
           volumeMounts:
             - mountPath: /app/codejail_service/settings/tutor.py
-              name: settings-codejail
+              name: codejail-settings
               subPath: tutor.py
       volumes:
-        - name: settings-codejail
+        - name: codejail-settings
           configMap:
-            name: settings-codejail
+            name: codejail-settings
 {% if CODEJAIL_ENABLE_K8S_DAEMONSET %}
 ---
 apiVersion: apps/v1
@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
       - name: apparmor-loader
-        image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }} 
+        image: {{ CODEJAIL_APPARMOR_DOCKER_IMAGE }}
         command:
           - /usr/bin/loader
           - -logtostderr

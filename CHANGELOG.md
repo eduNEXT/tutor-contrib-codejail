@@ -13,6 +13,14 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-22.0.1'></a>
+## 22.0.1 — 2026-08-13
+
+### Fixed
+
+- The kubernetes deployment was using and incorrect ConfigMap name when mounting
+  the settings file.
+
 <a id='changelog-22.0.0'></a>
 ## 22.0.0 — 2026-08-12
 
