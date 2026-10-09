@@ -13,6 +13,17 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-22.1.0'></a>
+## 22.1.0 — 2026-10-09
+
+### Added
+
+- AppArmor image can now be built for other architectures, including ARM64.
+
+### Fixed
+
+- Settings are now properly derived from the upstream production.py file.
+
 <a id='changelog-22.0.1'></a>
 ## 22.0.1 — 2026-08-13
 
