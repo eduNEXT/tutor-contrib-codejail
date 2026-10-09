@@ -1,4 +1,4 @@
-from codejail_service.settings.local import *  # pylint: disable=wildcard-import
+from codejail_service.settings.production import *  # pylint: disable=wildcard-import
 
 ALLOWED_HOSTS = [
     'codejail',
