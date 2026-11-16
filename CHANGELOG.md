@@ -13,6 +13,13 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-22.2.0'></a>
+## 22.2.0 — 2026-11-16
+
+### Changed
+
+- Expose the service through the 8550 port when running on dev mode.
+
 <a id='changelog-22.1.0'></a>
 ## 22.1.0 — 2026-10-09
 
