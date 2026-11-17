@@ -1,0 +1,3 @@
+codejail:
+    ports:
+      - 8550:8000
